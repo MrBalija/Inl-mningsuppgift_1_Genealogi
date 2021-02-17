@@ -41,30 +41,30 @@ namespace Inlämningsuppgift_1_Genealogi
             {
                 switch (userMenuPick)
                 {
-                    case 1: //USER INPUT: takes user to the members list.
-                        AddPerson();
+                    case 1:
+                        AddPerson(); //CHOICE 1: take user to 'Add person' page - to add a person to the list.
                         break;
-                    case 2: //USER INPUT: takes user to the general facts list.
-                        EditPerson();
+                    case 2: 
+                        EditPerson(); //CHOICE 2: take user to the 'Edit person' page - to edit existing person.
                         break;
-                    case 3: //USER INPUT: gives the user the option to remove a member from the list.
-                        DeletePerson();
+                    case 3: 
+                        DeletePerson(); //CHOICE 3: take user to the 'Delete person' page - to delete existing person.
                         break;
-                    case 4: //USER INPUT: ends the program.
-                        ShowParents();
+                    case 4:
+                        ShowParents(); //CHOICE 4: take user to the 'Show parents' page - lists the parents for a person.
                         break;
-                    case 5: //USER INPUT: ends the program.
-                        ShowSiblings();
+                    case 5:
+                        ShowSiblings(); //CHOICE 5: take user to the 'Show siblings' page - lists the siblings of a person.
                         break;
-                    case 6: //USER INPUT: ends the program.
-                        SearchPerson();
+                    case 6:
+                        SearchPerson(); //CHOICE 6: take user to the 'Search' page - user can search after a person by name, age, year etc.
                         break;
-                    case 7: //USER INPUT: ends the program.
+                    case 7: //CHOICE 7: end the program.
                         Console.Clear();
                         Console.WriteLine("\n\n\n- Until we meet again...\n\n\n");
                         quitProgram = true;
                         break;
-                    default: //USER INPUT: checks if user input is an integer between 1-7.
+                    default: //CHECKS USER INPUT: if user input isn't an integer between 1-7, tell user "no such option".
                         Console.Clear();
                         Console.WriteLine("\n\n\n- There is no such option.");
                         Thread.Sleep(1100);
