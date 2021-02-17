@@ -42,7 +42,7 @@ namespace Inlämningsuppgift_1_Genealogi
                 switch (userMenuPick)
                 {
                     case 1:
-                        AddPerson(); //CHOICE 1: take user to 'Add person' page - to add a person to the list.
+                        AddPerson(); //CHOICE 1: take user to 'Add person' page - to add a person to the table.
                         break;
                     case 2: 
                         EditPerson(); //CHOICE 2: take user to the 'Edit person' page - to edit existing person.
@@ -71,7 +71,7 @@ namespace Inlämningsuppgift_1_Genealogi
                         break;
                 }
             }
-            else //CHECKS USER INPUT: if user input is a string, tell user to use only integers.
+            else //CHECKS USER INPUT: if user input is a string, tell user "only integers accepted".
             {
                 Console.Clear();
                 Console.WriteLine("\n\n\n- Only integers accepted.");
