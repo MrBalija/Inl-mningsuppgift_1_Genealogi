@@ -9,16 +9,28 @@ namespace Inlämningsuppgift_1_Genealogi
 
         static void Main(string[] args)
         {
-            WelcomeIntro(); // WELCOMES the user.
-            SQLDatabase.CreateDatabase("My_Family_Tree"); // DATABASE: creates a database if it doesn't exist.
-            Menu(); //MENU: presents the menu to the user.
-        }
+            /*
+            var test = SQLDatabase.database.DoesTableExist("Bug");
+            Console.WriteLine(test);
+            Console.ReadKey();
+            */
+            // DATABASE: creates a database if it doesn't exist.
+            SQLDatabase.CreateDatabase("Family_Database");
 
+            // TABLE: creates a table.
+            SQLDatabase.CreateTable("My_Family_Tree");
+            
+            // WELCOMES the user.
+            WelcomeIntro();
+
+            //MENU: presents the menu to the user.
+            Menu();
+        }
 
         internal static void WelcomeIntro() // WELCOME: welcome the user.
         {
             Console.Title = "";
-            Console.WriteLine("\n\n\n- Welcome to my Family-Tree!");
+            Console.WriteLine("\n\n\n- Welcome to My Family-Tree!");
             Console.WriteLine("\n\nPress to continue...");
             Console.ReadKey();
             Console.Clear();
@@ -34,13 +46,17 @@ namespace Inlämningsuppgift_1_Genealogi
             Console.Write(".");
             Thread.Sleep(800);
             Console.Clear();
+
+            Console.Title = "Connected to: " + SQLDatabase.database.DatabaseName;
+            Console.Write("\n\nConnection established!");
+            Thread.Sleep(1500);
         }
 
         internal static void Menu() //MENU: presents the user with a menu of 7 options.
         {
             while (!quitProgram)
             {
-                Console.Title = "Geneanalogy - My Family Tree    |    DATABASE: " + database.DatabaseName;
+                Console.Title = "Geneanalogy    |    Database: " + SQLDatabase.database.DatabaseName;
                 Console.Clear();
                 Console.WriteLine("*** MENU ***\n");
                 Console.WriteLine("1. Add person");
@@ -48,7 +64,7 @@ namespace Inlämningsuppgift_1_Genealogi
                 Console.WriteLine("3. Delete person");
                 Console.WriteLine("4. Show parents");
                 Console.WriteLine("5. Show siblings");
-                Console.WriteLine("6. Search for a person");
+                Console.WriteLine("6. Search");
                 Console.WriteLine("7. Quit\n");
                 string userMenuPickString = Console.ReadLine();
 

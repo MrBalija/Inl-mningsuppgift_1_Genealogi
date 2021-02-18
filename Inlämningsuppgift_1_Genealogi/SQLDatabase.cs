@@ -9,16 +9,15 @@ namespace Inlämningsuppgift_1_Genealogi
     class SQLDatabase
     {
 
-        // PROPERTIES:
-        internal string ConnectionString { get; set; } = @"Data Source=.\SQLExpress;Integrated Security=true;database={0}";
-        internal string DatabaseName { get; set; } = "My_Family_Tree";
-
-
         // GLOBAL VARIABLES:
         internal static SQLDatabase database = new SQLDatabase();
 
+        // PROPERTIES:
+        internal string ConnectionString { get; set; } = @"Data Source=.\SQLExpress;Integrated Security=true;database={0}";
+        internal string DatabaseName { get; set; } = "Master";
 
-        // DATA TABLE: fetches data tables from the database.
+
+        // DATA TABLE: Fetches data tables from the database.
         internal DataTable GetDataTable(string sqlString, params (string, string)[] parameters)
         {
             var dataTable = new DataTable(); // Förbered Datatable
@@ -44,7 +43,7 @@ namespace Inlämningsuppgift_1_Genealogi
             return dataTable; // Returnera DataTable
         }
 
-        // SQL-EXECUTER: executes SQL-commands sent to the database.
+        // SQL-EXECUTER: Executes SQL-commands sent to the database.
         internal long ExecuteSQL(string sqlString, params (string, string)[] parameters)
         {
             long rowsAffected = 0;
@@ -64,48 +63,91 @@ namespace Inlämningsuppgift_1_Genealogi
             return rowsAffected;
         }
 
-
-        
+        // DATABASE: Creates a database.
         internal static void CreateDatabase(string databaseName)
         {
-
             if (database.DoesDatabaseExist(databaseName) == false)
             {
-                // Create a database based on the '@databaseName' input.
-                database.ExecuteSQL("CREATE DATABASE @databaseName",("@databaseName", databaseName));
+                // Create a database based on the 'databaseName' input.
+                database.ExecuteSQL($"CREATE DATABASE {databaseName};");
 
-                // Direct the user to proper database = '@databaseName' input.
+                // Direct the user to the proper database = 'databaseName' input.
                 database.DatabaseName = databaseName;
-
             }
             else
             {
-                // Direct the user to proper database = '@databaseName' input.
+                // Direct the user to the proper database = 'databaseName' input.
                 database.DatabaseName = databaseName;
             }
-                // CreateSkapar tabell 'People' med följande kolumner och datatyper.
-                database.ExecuteSQL(@"CREATE TABLE People (
-                                 ID int NOT NULL Identity (1,1),
-                                 firstName varchar(255),
-                                 lastName varchar(255),
-                                 address varchar(255),
-                                 city varchar(255),
-                                 shoeSize int);"
-                                  );
-
         }
 
+        // DOES DATABASE EXIST: Checks if database name exists.
         internal bool DoesDatabaseExist(string name)
         {
-            var dataBase = GetDataTable(@"SELECT name 
-                                          FROM sys.databases
-                                          WHERE name = @name", ("@name", name)
+            var dataBase = GetDataTable(@$"SELECT name 
+                                           FROM sys.databases
+                                           WHERE name = '{name}';"
                                        );
             if (dataBase == null)
             {
                 return false;
             }
-            return true;
+            return dataBase.Rows.Count > 0;
         }
+
+        // TABLE: Creates a table.
+        internal static void CreateTable(string tableName)
+        {
+            if (database.DoesTableExist(tableName) == false)
+            {
+                // Create a table based on the 'tableName' input.
+                database.ExecuteSQL(@$"USE {database.DatabaseName}
+                                       CREATE TABLE {tableName}(
+                                       ID int NOT NULL Identity (1,1),
+                                       Name varchar(30),
+                                       [Last name] varchar(30),
+                                       Birthplace varchar(30),
+                                       [Country of birth] varchar(30),
+                                       Born int,
+                                       Mother int,
+                                       Father int,
+                                       [Vital status] varchar(30));"
+                                   );
+
+                AddTableData();
+            }
+        }
+
+        internal static void AddTableData()
+        {
+            database.ExecuteSQL(@"insert into People (Name, Last name, Birthplace, Country of birth, Born, Mother, Father, Vital status) 
+                                    values ('Majlinda', 'Balija', 'Mitrovicë', 'Kosovo', '1986', 'Dinore Balija', 'Xhafer Balija', 'Alive');
+                                  insert into People (Name, Last name, Birthplace, Country of birth, Born, Mother, Father, Vital status) 
+                                    values ('Fisnik', 'Balija', 'Mitrovicë', 'Kosovo', '1988', 'Dinore Balija', 'Xhafer Balija', 'Alive');
+                                  insert into People (Name, Last name, Birthplace, Country of birth, Born, Mother, Father, Vital status) 
+                                    values ('Granit', 'Balija', 'Över Kalix', 'Sweden', '1993', 'Dinore Balija', 'Xhafer Balija', 'Alive');
+                                  insert into People (Name, Last name, Birthplace, Country of birth, Born, Mother, Father, Vital status) 
+                                    values ('Dinore', 'Balija', 'Bajgorë', 'Kosovo', '1959', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
+                                  insert into People (Name, Last name, Birthplace, Country of birth, Born, Mother, Father, Vital status) 
+                                    values ('Xhafer', 'Balija', 'Mitrovicë', 'Kosovo', '1959', 'Hat Baliu', 'Sadik Baliu', 'Alive');
+                                 "
+                               );
+        }
+
+            // DOES TABLE EXIST: Checks if database name exists.
+            internal bool DoesTableExist(string name)
+        {
+            var table = GetDataTable(@$"SELECT name 
+                                           FROM sys.tables
+                                           WHERE name = '{name}';"
+                                       );
+            if (table == null)
+            {
+                return false;
+            }
+            return table.Rows.Count > 0;
+        }
+
+
     }
 }
