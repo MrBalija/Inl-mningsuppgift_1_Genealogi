@@ -9,11 +9,16 @@ namespace Inlämningsuppgift_1_Genealogi
     class SQLDatabase
     {
 
+        // PROPERTIES:
         internal string ConnectionString { get; set; } = @"Data Source=.\SQLExpress;Integrated Security=true;database={0}";
-        internal string DatabaseName { get; set; } = "Family_Tree";
+        internal string DatabaseName { get; set; } = "My_Family_Tree";
 
 
+        // GLOBAL VARIABLES:
+        internal static SQLDatabase database = new SQLDatabase();
 
+
+        // DATA TABLE: fetches data tables from the database.
         internal DataTable GetDataTable(string sqlString, params (string, string)[] parameters)
         {
             var dataTable = new DataTable(); // Förbered Datatable
@@ -39,6 +44,7 @@ namespace Inlämningsuppgift_1_Genealogi
             return dataTable; // Returnera DataTable
         }
 
+        // SQL-EXECUTER: executes SQL-commands sent to the database.
         internal long ExecuteSQL(string sqlString, params (string, string)[] parameters)
         {
             long rowsAffected = 0;
@@ -59,5 +65,47 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
 
+        
+        internal static void CreateDatabase(string databaseName)
+        {
+
+            if (database.DoesDatabaseExist(databaseName) == false)
+            {
+                // Create a database based on the '@databaseName' input.
+                database.ExecuteSQL("CREATE DATABASE @databaseName",("@databaseName", databaseName));
+
+                // Direct the user to proper database = '@databaseName' input.
+                database.DatabaseName = databaseName;
+
+            }
+            else
+            {
+                // Direct the user to proper database = '@databaseName' input.
+                database.DatabaseName = databaseName;
+            }
+                // CreateSkapar tabell 'People' med följande kolumner och datatyper.
+                database.ExecuteSQL(@"CREATE TABLE People (
+                                 ID int NOT NULL Identity (1,1),
+                                 firstName varchar(255),
+                                 lastName varchar(255),
+                                 address varchar(255),
+                                 city varchar(255),
+                                 shoeSize int);"
+                                  );
+
+        }
+
+        internal bool DoesDatabaseExist(string name)
+        {
+            var dataBase = GetDataTable(@"SELECT name 
+                                          FROM sys.databases
+                                          WHERE name = @name", ("@name", name)
+                                       );
+            if (dataBase == null)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

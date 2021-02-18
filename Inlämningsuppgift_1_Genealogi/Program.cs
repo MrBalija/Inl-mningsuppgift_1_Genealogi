@@ -6,11 +6,11 @@ namespace Inlämningsuppgift_1_Genealogi
     class Program
     {
         public static bool quitProgram = false;
-        internal static SQLDatabase person = new SQLDatabase ();
 
         static void Main(string[] args)
         {
-            WelcomeIntro(); // WELCOME MSG
+            WelcomeIntro(); // WELCOMES the user.
+            SQLDatabase.CreateDatabase("My_Family_Tree"); // DATABASE: creates a database if it doesn't exist.
             Menu(); //MENU: presents the menu to the user.
         }
 
@@ -40,7 +40,7 @@ namespace Inlämningsuppgift_1_Genealogi
         {
             while (!quitProgram)
             {
-                Console.Title = "Geneanalogy - My Family Tree    |    DATABASE: " + person.DatabaseName;
+                Console.Title = "Geneanalogy - My Family Tree    |    DATABASE: " + database.DatabaseName;
                 Console.Clear();
                 Console.WriteLine("*** MENU ***\n");
                 Console.WriteLine("1. Add person");
