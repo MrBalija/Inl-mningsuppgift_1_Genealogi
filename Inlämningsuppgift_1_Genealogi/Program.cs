@@ -6,6 +6,8 @@ namespace Inlämningsuppgift_1_Genealogi
     class Program
     {
         public static bool quitProgram = false;
+        public static bool quitAddPerson = false;
+
 
         static void Main(string[] args)
         {
@@ -15,13 +17,13 @@ namespace Inlämningsuppgift_1_Genealogi
             Console.ReadKey();
             */
             // DATABASE: creates a database if it doesn't exist.
-            SQLDatabase.CreateDatabase("Family_Database");
+            //SQLDatabase.CreateDatabase("Family_Database");
 
-            // TABLE: creates a table.
-            SQLDatabase.CreateTable("My_Family_Tree");
-            
+            // TABLE: creates table with .
+            //SQLDatabase.CreateTable(SQLDatabase.DataTable);
+
             // WELCOMES the user.
-            WelcomeIntro();
+            //WelcomeIntro();
 
             //MENU: presents the menu to the user.
             Menu();
@@ -66,6 +68,8 @@ namespace Inlämningsuppgift_1_Genealogi
                 Console.WriteLine("5. Show siblings");
                 Console.WriteLine("6. Search");
                 Console.WriteLine("7. Quit\n");
+
+                Console.Write("> ");
                 string userMenuPickString = Console.ReadLine();
 
                 if (int.TryParse(userMenuPickString, out int userMenuPick)) //CHECKS USER INPUT: if user input is an integer, pass.
@@ -113,7 +117,140 @@ namespace Inlämningsuppgift_1_Genealogi
 
         internal static void AddPerson()
         {
-            throw new NotImplementedException();
+            quitAddPerson = false;
+            var fillInformationCounter = 0;
+
+            Person addPerson = new Person();
+            string[] checkBox, checkedBox;
+
+            ResetProperties(addPerson, out checkBox, out checkedBox);
+
+            while (!quitAddPerson)
+            {
+                Console.Clear();
+                Console.WriteLine("\n\n\n- Add a person to the table by filling in current information:\n");
+                Console.WriteLine(checkBox[0] + " Name: " + addPerson.Name + "\n" +
+                                  checkBox[1] + " Last name: " + addPerson.LastName + "\n" +
+                                  checkBox[2] + " Birthplace: " + addPerson.Birthplace + "\n" +
+                                  checkBox[3] + " Country of birth: " + addPerson.CountryOfBirth + "\n" +
+                                  checkBox[4] + " Born: " + addPerson.Born + "\n" +
+                                  checkBox[5] + " Mother: " + addPerson.Mother + "\n" +
+                                  checkBox[6] + " Father: " + addPerson.Father + "\n" +
+                                  checkBox[7] + " Vital status: " + addPerson.VitalStatus + "\n\n");
+
+                if (fillInformationCounter == 0)
+                {
+                    Console.Write("> Name: ");
+                    addPerson.Name = Console.ReadLine();
+                    checkBox[0] = checkedBox[0] = "[x]";
+                    fillInformationCounter++;
+                    Console.Clear();
+                }
+                else if (fillInformationCounter == 1)
+                {
+                    Console.Write("> Last name: ");
+                    addPerson.LastName = Console.ReadLine();
+                    checkBox[1] = checkedBox[1] = "[x]";
+                    fillInformationCounter++;
+                    Console.Clear();
+                }
+                else if (fillInformationCounter == 2)
+                {
+                    Console.Write("> Birthplace: ");
+                    addPerson.Birthplace = Console.ReadLine();
+                    checkBox[2] = checkedBox[2] = "[x]";
+                    fillInformationCounter++;
+                    Console.Clear();
+                }
+                else if (fillInformationCounter == 3)
+                {
+                    Console.Write("> Country of birth: ");
+                    addPerson.CountryOfBirth = Console.ReadLine();
+                    checkBox[3] = checkedBox[3] = "[x]";
+                    fillInformationCounter++;
+                    Console.Clear();
+                }
+                else if (fillInformationCounter == 4)
+                {
+                    Console.Write("> Born: ");
+                    addPerson.Born = Console.ReadLine();
+                    checkBox[4] = checkedBox[4] = "[x]";
+                    fillInformationCounter++;
+                    Console.Clear();
+                }
+                else if (fillInformationCounter == 5)
+                {
+                    Console.Write("> Mother: ");
+                    addPerson.Mother = Console.ReadLine();
+                    checkBox[5] = checkedBox[5] = "[x]";
+                    fillInformationCounter++;
+                    Console.Clear();
+                }
+                else if (fillInformationCounter == 6)
+                {
+                    Console.Write("> Father: ");
+                    addPerson.Father = Console.ReadLine();
+                    checkBox[6] = checkedBox[6] = "[x]";
+                    fillInformationCounter++;
+                    Console.Clear();
+                }
+                else if (fillInformationCounter == 7)
+                {
+                    Console.Write("> Vital status: ");
+                    addPerson.VitalStatus = Console.ReadLine();
+                    checkBox[7] = checkedBox[7] = "[x]";
+                    fillInformationCounter++;
+                    Console.Clear();
+
+                    Console.Clear();
+                    Console.WriteLine("\n\n\n- Person added to the " + SQLDatabase.DataTable + " Table :\n");
+                    Console.WriteLine(checkBox[0] + " Name: " + addPerson.Name + "\n" +
+                                      checkBox[1] + " Last name: " + addPerson.LastName + "\n" +
+                                      checkBox[2] + " Birthplace: " + addPerson.Birthplace + "\n" +
+                                      checkBox[3] + " Country of birth: " + addPerson.CountryOfBirth + "\n" +
+                                      checkBox[4] + " Born: " + addPerson.Born + "\n" +
+                                      checkBox[5] + " Mother: " + addPerson.Mother + "\n" +
+                                      checkBox[6] + " Father: " + addPerson.Father + "\n" +
+                                      checkBox[7] + " Vital status: " + addPerson.VitalStatus);
+
+                    Console.WriteLine("\n\n\n- (Press to return...)\n");
+                    Console.ReadKey();
+                    quitAddPerson = true;
+                }
+            }
+
+        }
+
+        internal static void ResetProperties(Person addPerson, out string[] checkBox, out string[] checkedBox)
+        {
+            checkBox = new string[8];
+            checkBox[0] = "[ ]";
+            checkBox[1] = "[ ]";
+            checkBox[2] = "[ ]";
+            checkBox[3] = "[ ]";
+            checkBox[4] = "[ ]";
+            checkBox[5] = "[ ]";
+            checkBox[6] = "[ ]";
+            checkBox[7] = "[ ]";
+
+            checkedBox = new string[8];
+            checkedBox[0] = "[x]";
+            checkedBox[1] = "[x]";
+            checkedBox[2] = "[x]";
+            checkedBox[3] = "[x]";
+            checkedBox[4] = "[x]";
+            checkedBox[5] = "[x]";
+            checkedBox[6] = "[x]";
+            checkedBox[7] = "[x]";
+
+            addPerson.Name = "";
+            addPerson.LastName = "";
+            addPerson.Birthplace = "";
+            addPerson.CountryOfBirth = "";
+            addPerson.Born = "";
+            addPerson.Mother = "";
+            addPerson.Father = "";
+            addPerson.VitalStatus = "";
         }
 
         internal static void EditPerson()

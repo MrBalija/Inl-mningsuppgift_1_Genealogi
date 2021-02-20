@@ -14,9 +14,9 @@ namespace Inlämningsuppgift_1_Genealogi
         public string Birthplace { get; set; }
         public string CountryOfBirth { get; set; }
         public string Born { get; set; }
-        public int Mother { get; set; }
-        public int Father { get; set; }
-        public int VitalStatus { get; set; }
+        public string Mother { get; set; }
+        public string Father { get; set; }
+        public string VitalStatus { get; set; }
 
     }
 }
