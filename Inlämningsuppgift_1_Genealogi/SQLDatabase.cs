@@ -14,8 +14,8 @@ namespace Inlämningsuppgift_1_Genealogi
 
         // PROPERTIES:
         internal string ConnectionString { get; set; } = @"Data Source=.\SQLExpress;Integrated Security=true;database={0}";
-        internal string DatabaseName { get; set; } = "Master";
-        internal static string DataTableName { get; set; } = "My_Family_Tree";
+        internal string DatabaseName { get; set; } = "Family_Database";
+        internal string DataTableName { get; set; } = "My_Family_Tree";
 
 
         // DATA TABLE: Fetches data tables from the database.
@@ -119,7 +119,7 @@ namespace Inlämningsuppgift_1_Genealogi
                                    );
                 AddTableData(tableName);
             }
-            else
+            /*else if (database.DoesTableExist(tableName + "_New") == false)
             {
                 // If table exist, create a table based on the 'tableName' input and add '_New' at the end of the name.
                 database.ExecuteSQL(@$"USE {database.DatabaseName}
@@ -135,12 +135,13 @@ namespace Inlämningsuppgift_1_Genealogi
                                        [Vital status] varchar(30));"
                                    );
                 AddTableData(tableName);
-            }
+            }*/
         }
 
-        //TABLE DATA: Data with family and relatives, 3 generations back.
+        //TABLE DATA: Adds data to table with family and relatives, 3 generations back.
         internal static void AddTableData(string tableName)
         {
+            // Inserts data about persons to the table.
             database.ExecuteSQL(@$"insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
                                      values ('Majlinda', 'Balija', 'Mitrovicë', 'Kosovo', '1986', 'Dinore Balija', 'Xhafer Balija', 'Alive');
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
@@ -191,7 +192,7 @@ namespace Inlämningsuppgift_1_Genealogi
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
                                      values ('Jetish', 'Istrefi', 'Bajgorë', 'Kosovo', '1931', 'Dylbere Istrefi', 'Ismer Istrefi', 'Deceased');
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                     values ('Zeka', 'Istrefi', 'Bajgorë', 'Kosovo', '1929', 'Dylbere Istrefi', 'Ismer Istrefi', 'Alive');
+                                     values ('Zeka', 'Istrefi', 'Bajgorë', 'Kosovo', '1929', 'Dylbere Istrefi', 'Ismer Istrefi', 'Deceased');
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
                                      values ('Fadil', 'Istrefi', 'Bajgorë', 'Kosovo', '1933', 'Dylbere Istrefi', 'Ismer Istrefi', 'Deceased');
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
@@ -232,26 +233,20 @@ namespace Inlämningsuppgift_1_Genealogi
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
                                      values ('Haxhi', 'Rexhepi', 'Likofcë', 'Kosovo', '1942', 'Han Rexhepi', 'Hiti Rexhepi', 'Deceased');"
                                );
-            /*
-            database.AlterTableAdd(tableName, "Age int");
+            
+            // Adds Age-column to the table.
+            database.AlterTableAdd(tableName, "Age varchar(30)");
 
-
-            database.ExecuteSQL(@$"insert into {tableName} (Age)
-                                   VALUES(
-                                    CASE
-                                       WHEN [Vital status] = 'Alive' THEN CONVERT(varchar(30), DATEDIFF(year, 'Birthday', 2020))
-                                       ELSE 'RIP')
-                                    END"
-                                );
-            */
+            // Updates the age for the persons; if alive = calculate age, else if deceased = add R.I.P. 
+            CRUD.UpdateColumnAge(database.DataTableName);
         }
 
-        // DOES TABLE EXIST: Checks if database name exists.
+        // DOES TABLE EXIST: Checks if table name exists.
         internal bool DoesTableExist(string name)
         {
             var table = GetDataTable(@$"SELECT name 
-                                           FROM sys.tables
-                                           WHERE name = '{name}';"
+                                        FROM sys.tables
+                                        WHERE name = '{name}';"
                                        );
             if (table == null)
             {
@@ -260,18 +255,19 @@ namespace Inlämningsuppgift_1_Genealogi
             return table.Rows.Count > 0;
         }
 
-        // ADD COLUMN: Adds a column to a desired table with field name and data type of the field.
-        internal void AlterTableAdd(string table, string fieldsWithDataType)
+        // ADD COLUMN: Adds a new column with data type to a desired table.
+        internal void AlterTableAdd(string table, string columnsWithDataType)
         {
             ExecuteSQL(@$"ALTER TABLE {table}
-                          ADD {fieldsWithDataType}"
+                          ADD {columnsWithDataType}"
                       );
         }
 
+        // ADD PERSON: Adds a new person to current table in use.
         internal static void InsertPersonToTable (string name, string lastName, string birthplace, string countryOfBirth, 
                                            int born, string mother, string father, string vitalStatus)
         {
-            database.ExecuteSQL(@$"insert into {DataTableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+            database.ExecuteSQL(@$"insert into {database.DataTableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
                                      values ('{name}', '{lastName}', '{birthplace}', '{countryOfBirth}', '{born}', '{mother}', '{father}', '{vitalStatus}');"
                                );
         }
