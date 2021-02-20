@@ -140,33 +140,73 @@ namespace Inlämningsuppgift_1_Genealogi
                 {
                     Console.Write("> Name: ");
                     addPerson.Name = Console.ReadLine();
-                    checkBox[0] = checkedBox[0] = "[x]";
-                    fillInformationCounter++;
-                    Console.Clear();
+                    if (!int.TryParse(addPerson.Name, out _))
+                    {
+                        checkBox[0] = checkedBox[0] = "[x]";
+                        fillInformationCounter++;
+                        Console.Clear();
+                    }
+                    else
+                    {
+                        addPerson.Name = "";
+                        Console.Clear();
+                        Console.WriteLine("\n\n\nOnly text accepted.");
+                        Thread.Sleep(1500);
+                    }
                 }
                 else if (fillInformationCounter == 1)
                 {
                     Console.Write("> Last name: ");
                     addPerson.LastName = Console.ReadLine();
-                    checkBox[1] = checkedBox[1] = "[x]";
-                    fillInformationCounter++;
-                    Console.Clear();
+                    if (!int.TryParse(addPerson.LastName, out _))
+                    {
+                        checkBox[1] = checkedBox[1] = "[x]";
+                        fillInformationCounter++;
+                        Console.Clear();
+                    }
+                    else
+                    {
+                        addPerson.LastName = "";
+                        Console.Clear();
+                        Console.WriteLine("\n\n\nOnly text accepted.");
+                        Thread.Sleep(1500);
+                    }
                 }
                 else if (fillInformationCounter == 2)
                 {
                     Console.Write("> Birthplace: ");
                     addPerson.Birthplace = Console.ReadLine();
-                    checkBox[2] = checkedBox[2] = "[x]";
-                    fillInformationCounter++;
-                    Console.Clear();
+                    if (!int.TryParse(addPerson.Birthplace, out _))
+                    {
+                        checkBox[2] = checkedBox[2] = "[x]";
+                        fillInformationCounter++;
+                        Console.Clear();
+                    }
+                    else
+                    {
+                        addPerson.Birthplace = "";
+                        Console.Clear();
+                        Console.WriteLine("\n\n\nOnly text accepted.");
+                        Thread.Sleep(1500);
+                    }
                 }
                 else if (fillInformationCounter == 3)
                 {
                     Console.Write("> Country of birth: ");
                     addPerson.CountryOfBirth = Console.ReadLine();
-                    checkBox[3] = checkedBox[3] = "[x]";
-                    fillInformationCounter++;
-                    Console.Clear();
+                    if (!int.TryParse(addPerson.CountryOfBirth, out _))
+                    {
+                        checkBox[3] = checkedBox[3] = "[x]";
+                        fillInformationCounter++;
+                        Console.Clear();
+                    }
+                    else
+                    {
+                        addPerson.CountryOfBirth = "";
+                        Console.Clear();
+                        Console.WriteLine("\n\n\nOnly text accepted.");
+                        Thread.Sleep(1500);
+                    }
                 }
                 else if (fillInformationCounter == 4)
                 {
@@ -176,38 +216,69 @@ namespace Inlämningsuppgift_1_Genealogi
                     {
                         checkBox[4] = checkedBox[4] = "[x]";
                         fillInformationCounter++;
+                        Console.Clear();
                     }
                     else
                     {
+                        addPerson.Born = "";
                         Console.Clear();
                         Console.WriteLine("\n\n\nOnly integers accepted.");
                         Thread.Sleep(1500);
                     }
-                    Console.Clear();
                 }
                 else if (fillInformationCounter == 5)
                 {
                     Console.Write("> Mother: ");
                     addPerson.Mother = Console.ReadLine();
-                    checkBox[5] = checkedBox[5] = "[x]";
-                    fillInformationCounter++;
-                    Console.Clear();
+                    if (!int.TryParse(addPerson.Mother, out _))
+                    {
+                        checkBox[5] = checkedBox[5] = "[x]";
+                        fillInformationCounter++;
+                        Console.Clear();
+                    }
+                    else
+                    {
+                        addPerson.Mother = "";
+                        Console.Clear();
+                        Console.WriteLine("\n\n\nOnly text accepted.");
+                        Thread.Sleep(1500);
+                    }
                 }
                 else if (fillInformationCounter == 6)
                 {
                     Console.Write("> Father: ");
                     addPerson.Father = Console.ReadLine();
-                    checkBox[6] = checkedBox[6] = "[x]";
-                    fillInformationCounter++;
-                    Console.Clear();
+                    if (!int.TryParse(addPerson.Father, out _))
+                    {
+                        checkBox[6] = checkedBox[6] = "[x]";
+                        fillInformationCounter++;
+                        Console.Clear();
+                    }
+                    else
+                    {
+                        addPerson.Father = "";
+                        Console.Clear();
+                        Console.WriteLine("\n\n\nOnly text accepted.");
+                        Thread.Sleep(1500);
+                    }
                 }
                 else if (fillInformationCounter == 7)
                 {
                     Console.Write("> Vital status: ");
                     addPerson.VitalStatus = Console.ReadLine();
-                    checkBox[7] = checkedBox[7] = "[x]";
-                    fillInformationCounter++;
-                    Console.Clear();
+                    if (!int.TryParse(addPerson.VitalStatus, out _))
+                    {
+                        checkBox[7] = checkedBox[7] = "[x]";
+                        fillInformationCounter++;
+                        Console.Clear();
+                    }
+                    else
+                    {
+                        addPerson.VitalStatus = "";
+                        Console.Clear();
+                        Console.WriteLine("\n\n\nOnly text accepted.");
+                        Thread.Sleep(1500);
+                    }
 
                     Console.WriteLine("\n\n\n- Person added to the Table: " + SQLDatabase.DataTableName + "\n");
                     Console.WriteLine(checkBox[0] + " Name: " + addPerson.Name + "\n" +
