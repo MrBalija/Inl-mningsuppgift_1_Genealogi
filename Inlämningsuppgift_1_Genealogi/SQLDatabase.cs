@@ -15,7 +15,7 @@ namespace Inlämningsuppgift_1_Genealogi
         // PROPERTIES:
         internal string ConnectionString { get; set; } = @"Data Source=.\SQLExpress;Integrated Security=true;database={0}";
         internal string DatabaseName { get; set; } = "Master";
-        internal static string DataTable { get; set; } = "My_Family_Tree";
+        internal static string DataTableName { get; set; } = "My_Family_Tree";
 
 
         // DATA TABLE: Fetches data tables from the database.
@@ -232,7 +232,7 @@ namespace Inlämningsuppgift_1_Genealogi
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
                                      values ('Haxhi', 'Rexhepi', 'Likofcë', 'Kosovo', '1942', 'Han Rexhepi', 'Hiti Rexhepi', 'Deceased');"
                                );
-
+            /*
             database.AlterTableAdd(tableName, "Age int");
 
 
@@ -243,7 +243,7 @@ namespace Inlämningsuppgift_1_Genealogi
                                        ELSE 'RIP')
                                     END"
                                 );
-
+            */
         }
 
         // DOES TABLE EXIST: Checks if database name exists.
@@ -268,5 +268,12 @@ namespace Inlämningsuppgift_1_Genealogi
                       );
         }
 
+        internal static void InsertPersonToTable (string name, string lastName, string birthplace, string countryOfBirth, 
+                                           int born, string mother, string father, string vitalStatus)
+        {
+            database.ExecuteSQL(@$"insert into {DataTableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                     values ('{name}', '{lastName}', '{birthplace}', '{countryOfBirth}', '{born}', '{mother}', '{father}', '{vitalStatus}');"
+                               );
+        }
     }
 }

@@ -6,7 +6,6 @@ namespace Inlämningsuppgift_1_Genealogi
     class Program
     {
         public static bool quitProgram = false;
-        public static bool quitAddPerson = false;
 
 
         static void Main(string[] args)
@@ -17,10 +16,10 @@ namespace Inlämningsuppgift_1_Genealogi
             Console.ReadKey();
             */
             // DATABASE: creates a database if it doesn't exist.
-            //SQLDatabase.CreateDatabase("Family_Database");
+            SQLDatabase.CreateDatabase("Family_Database");
 
             // TABLE: creates table with .
-            //SQLDatabase.CreateTable(SQLDatabase.DataTable);
+            SQLDatabase.CreateTable(SQLDatabase.DataTableName);
 
             // WELCOMES the user.
             //WelcomeIntro();
@@ -58,7 +57,7 @@ namespace Inlämningsuppgift_1_Genealogi
         {
             while (!quitProgram)
             {
-                Console.Title = "Geneanalogy    |    Database: " + SQLDatabase.database.DatabaseName;
+                Console.Title = "Geneanalogy    |    Database: " + SQLDatabase.database.DatabaseName + "    |    Table: " + SQLDatabase.database.DatabaseName;
                 Console.Clear();
                 Console.WriteLine("*** MENU ***\n");
                 Console.WriteLine("1. Add person");
@@ -117,13 +116,12 @@ namespace Inlämningsuppgift_1_Genealogi
 
         internal static void AddPerson()
         {
-            quitAddPerson = false;
+            bool quitAddPerson = false;
             var fillInformationCounter = 0;
-
             Person addPerson = new Person();
-            string[] checkBox, checkedBox;
 
-            ResetProperties(addPerson, out checkBox, out checkedBox);
+            // CLEAR FORM: resets the form.
+            ClearForm(addPerson, out string[] checkBox, out string[] checkedBox);
 
             while (!quitAddPerson)
             {
@@ -202,8 +200,7 @@ namespace Inlämningsuppgift_1_Genealogi
                     fillInformationCounter++;
                     Console.Clear();
 
-                    Console.Clear();
-                    Console.WriteLine("\n\n\n- Person added to the " + SQLDatabase.DataTable + " Table :\n");
+                    Console.WriteLine("\n\n\n- Person added to the Table: " + SQLDatabase.DataTableName + "\n");
                     Console.WriteLine(checkBox[0] + " Name: " + addPerson.Name + "\n" +
                                       checkBox[1] + " Last name: " + addPerson.LastName + "\n" +
                                       checkBox[2] + " Birthplace: " + addPerson.Birthplace + "\n" +
@@ -215,13 +212,16 @@ namespace Inlämningsuppgift_1_Genealogi
 
                     Console.WriteLine("\n\n\n- (Press to return...)\n");
                     Console.ReadKey();
+                    
+                    SQLDatabase.InsertPersonToTable(addPerson.Name, addPerson.LastName, addPerson.Birthplace, addPerson.CountryOfBirth,
+                                                    Convert.ToInt32(addPerson.Born), addPerson.Mother, addPerson.Father, addPerson.VitalStatus);
                     quitAddPerson = true;
                 }
             }
 
         }
 
-        internal static void ResetProperties(Person addPerson, out string[] checkBox, out string[] checkedBox)
+        internal static void ClearForm(Person addPerson, out string[] checkBox, out string[] checkedBox)
         {
             checkBox = new string[8];
             checkBox[0] = "[ ]";
