@@ -170,25 +170,20 @@ namespace Inlämningsuppgift_1_Genealogi
                 }
                 else if (fillInformationCounter == 4)
                 {
-                    bool endDoWhile = false;
-                    while (!endDoWhile)
+                    Console.Write("> Born: ");
+                    addPerson.Born = Console.ReadLine();
+                    if (int.TryParse(addPerson.Born, out _))
                     {
-                        Console.Write("> Born: ");
-                        addPerson.Born = Console.ReadLine();
-                        if (int.TryParse(addPerson.Born, out _))
-                        {
-                            endDoWhile = true;
-                            fillInformationCounter++;
-                        }
-                        else
-                        {
-                            Console.Clear();
-                            Console.WriteLine("\n\n\nOnly integers accepted.");
-
-                        }
                         checkBox[4] = checkedBox[4] = "[x]";
-                        Console.Clear(); 
+                        fillInformationCounter++;
                     }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("\n\n\nOnly integers accepted.");
+                        Thread.Sleep(1500);
+                    }
+                    Console.Clear();
                 }
                 else if (fillInformationCounter == 5)
                 {
@@ -226,7 +221,7 @@ namespace Inlämningsuppgift_1_Genealogi
 
                     Console.WriteLine("\n\n\n- (Press to return...)\n");
                     Console.ReadKey();
-                    
+
                     SQLDatabase.InsertPersonToTable(addPerson.Name, addPerson.LastName, addPerson.Birthplace, addPerson.CountryOfBirth,
                                                     Convert.ToInt32(addPerson.Born), addPerson.Mother, addPerson.Father, addPerson.VitalStatus);
                     quitAddPerson = true;
