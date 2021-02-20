@@ -16,10 +16,10 @@ namespace Inlämningsuppgift_1_Genealogi
             Console.ReadKey();
             */
             // DATABASE: creates a database if it doesn't exist.
-            SQLDatabase.CreateDatabase("Family_Database");
+            //SQLDatabase.CreateDatabase("Family_Database");
 
             // TABLE: creates table with .
-            SQLDatabase.CreateTable(SQLDatabase.DataTableName);
+            //SQLDatabase.CreateTable(SQLDatabase.DataTableName);
 
             // WELCOMES the user.
             //WelcomeIntro();
@@ -170,11 +170,25 @@ namespace Inlämningsuppgift_1_Genealogi
                 }
                 else if (fillInformationCounter == 4)
                 {
-                    Console.Write("> Born: ");
-                    addPerson.Born = Console.ReadLine();
-                    checkBox[4] = checkedBox[4] = "[x]";
-                    fillInformationCounter++;
-                    Console.Clear();
+                    bool endDoWhile = false;
+                    while (!endDoWhile)
+                    {
+                        Console.Write("> Born: ");
+                        addPerson.Born = Console.ReadLine();
+                        if (int.TryParse(addPerson.Born, out _))
+                        {
+                            endDoWhile = true;
+                            fillInformationCounter++;
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            Console.WriteLine("\n\n\nOnly integers accepted.");
+
+                        }
+                        checkBox[4] = checkedBox[4] = "[x]";
+                        Console.Clear(); 
+                    }
                 }
                 else if (fillInformationCounter == 5)
                 {
