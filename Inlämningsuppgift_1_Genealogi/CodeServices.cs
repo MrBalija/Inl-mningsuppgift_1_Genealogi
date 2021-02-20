@@ -6,6 +6,8 @@ namespace Inlämningsuppgift_1_Genealogi
 {
     class CodeServices
     {
+        public static CodeServices codeservices = new CodeServices();
+
         public void ClearLastLine() //Clears last line.
         {
             Console.SetCursorPosition(0, Console.CursorTop - 1);

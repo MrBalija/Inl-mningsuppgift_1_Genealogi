@@ -144,7 +144,7 @@ namespace Inlämningsuppgift_1_Genealogi
 
             while (!quitSearch)
             {
-                CRUD.Search(SQLDatabase.database.DataTableName);
+                CRUD.Search();
             }
         }
 

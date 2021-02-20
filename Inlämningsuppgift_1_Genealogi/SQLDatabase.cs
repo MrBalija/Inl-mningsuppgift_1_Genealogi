@@ -75,14 +75,14 @@ namespace Inlämningsuppgift_1_Genealogi
                 // Direct the user to the proper database = 'databaseName' input.
                 database.DatabaseName = databaseName;
             }
-            else
+            /*else
             {
                 // If database exist, create a databse based on the 'tableName' input and add '_New' at the end of the name.
                 database.ExecuteSQL($"CREATE DATABASE {databaseName}_New;");
 
                 // Direct the user to the proper database = 'databaseName' input.
                 database.DatabaseName = databaseName;
-            }
+            }*/
         }
 
         // DOES DATABASE EXIST: Checks if database name exists.
