@@ -10,6 +10,7 @@ namespace Inlämningsuppgift_1_Genealogi
     {
 
         public static bool quitCreatePerson;
+        public static bool quitSearch;
         public static string personBorn;
         public static Person person = new Person();
 
@@ -241,13 +242,23 @@ namespace Inlämningsuppgift_1_Genealogi
         // READ: looks for a person in the database and prints out the info.
         public static void Read(Person person)
         {
-            bool quitReadPerson = false;
-            while (!quitReadPerson)
-            {
-                Search(CRUD.person);
-                Console.WriteLine("| # | ID |  Name  |  Last name | Birthplace | Country of birth |  Born  |  Mother  |  Father  | Vital status |  Age  |");
-                Print(person);
-            }
+            Search(CRUD.person);
+
+            Console.WriteLine("| # | ID |  Name  |  Last name | Birthplace | Country of birth |  Born  |  Mother  |  Father  | Vital status |  Age  |");
+            Print(person);
+            Console.WriteLine("\n\nPress to return...");
+            Console.ReadKey();
+        }
+
+        // READ: looks for a person in the database and prints out the info.
+        public static void Update(Person person)
+        {
+            Search(CRUD.person);
+
+            Console.WriteLine("| # | ID |  Name  |  Last name | Birthplace | Country of birth |  Born  |  Mother  |  Father  | Vital status |  Age  |");
+            Print(person);
+            Console.WriteLine("\n\nPress to return...");
+            Console.ReadKey();
         }
 
         private static Person GetPersonObject(DataRow row)
@@ -281,32 +292,42 @@ namespace Inlämningsuppgift_1_Genealogi
 
         public static Person Search(Person person)
         {
-            Console.Clear();
-            Program.PrintMenuChoiceHeader(Program.menuChoice);
-
-            Console.WriteLine("- Please specify search option for the database.\n");
-            Console.WriteLine("[1] Search person by Name and Last name");
-            Console.WriteLine("[2] Search person by ID");
-            Console.WriteLine("[3] Search ALL\n\n");
-            Console.WriteLine("{11}. QUIT\n\n");
-
-            if (int.TryParse(Console.ReadLine(), out int userChoice))
+            quitSearch = false;
+            while (!quitSearch)
             {
-                switch (userChoice)
+                Console.Clear();
+                Program.PrintMenuChoiceHeader(Program.menuChoice);
+
+                Console.WriteLine("\n- Please specify search option for the database.\n");
+                Console.WriteLine("[1] Search person by Name and Last name");
+                Console.WriteLine("[2] Search person by ID");
+                Console.WriteLine("[3] Search ALL\n\n");
+                Console.WriteLine("{11}. QUIT\n\n");
+
+                if (int.TryParse(Console.ReadLine(), out int userChoice))
                 {
-                    case 1:
-                        person = SearchByNameLastName();
-                        break;
-                    case 2:
-                        person = SearchById();
-                        break;
-                    case 3:
-                        person = SearchAll();
-                        break;
-                    default:
-                        Console.Clear();
-                        Console.WriteLine("\n\n\n- There's no such option.");
-                        break;
+                    switch (userChoice)
+                    {
+                        case 1:
+                            person = SearchByNameLastName();
+                            break;
+                        case 2:
+                            person = SearchById();
+                            break;
+                        case 3:
+                            person = SearchAll();
+                            break;
+                        case 11:
+                            quitSearch = true;
+                            Program.quitReadPerson = true;
+                            Program.quitUpdatePerson = true;
+                            Program.quitDeletePerson = true;
+                            break;
+                        default:
+                            Console.Clear();
+                            Console.WriteLine("\n\n\n- There's no such option.");
+                            break;
+                    }
                 }
             }
             return person;
@@ -314,7 +335,7 @@ namespace Inlämningsuppgift_1_Genealogi
 
         private static Person SearchByNameLastName()
         {
-            Console.Write("Enter name: ");
+            Console.Write("\nEnter name: ");
             string searchName = Console.ReadLine();
 
             Console.Write("\nEnter last name: ");
@@ -385,16 +406,12 @@ namespace Inlämningsuppgift_1_Genealogi
 
         private static Person SearchById()
         {
-            Console.Write("Enter name: ");
-            string searchName = Console.ReadLine();
-
-            Console.Write("\nEnter last name: ");
-            string searchLastName = Console.ReadLine();
+            Console.Write("\nEnter ID: ");
+            string searchID = Console.ReadLine();
 
             DataTable dataTable = SQLDatabase.database.GetDataTable(@$"SELECT * 
                                                                        FROM {SQLDatabase.database.DataTableName} 
-                                                                       WHERE Id = '{searchName}' 
-                                                                       AND [Last name] = '{searchLastName}'"
+                                                                       WHERE Id = '{searchID}'"
                                                                    );
             if (dataTable.Rows.Count == 1)
             {
@@ -409,38 +426,7 @@ namespace Inlämningsuppgift_1_Genealogi
                 person.VitalStatus = (string)dataTable.Rows[0]["Vital status"];
                 person.Age = (string)dataTable.Rows[0]["Age"];
 
-                return person;
-            }
-            else if (dataTable.Rows.Count > 1)
-            {
-                Console.Clear();
-                Console.WriteLine("\n\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n\n");
-
-                Console.WriteLine("|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
-                for (int i = 0; i < dataTable.Rows.Count; i++)
-                {
-                    DataRow row = dataTable.Rows[i];
-                    Console.WriteLine(@$"[{i + 1}] {row["ID"]}  {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}    
-                                                   {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}"
-                                     );
-
-                }
-
-                Console.WriteLine("\n\n- Pick a person\n");
-                Console.Write("> ");
-                var choice = Convert.ToInt32(Console.ReadLine());
-
-                person.Id = (int)dataTable.Rows[choice - 1]["ID"];
-                person.Name = (string)dataTable.Rows[choice - 1]["Name"];
-                person.LastName = (string)dataTable.Rows[choice - 1]["Last name"];
-                person.Birthplace = (string)dataTable.Rows[choice - 1]["Birthplace"];
-                person.CountryOfBirth = (string)dataTable.Rows[choice - 1]["Country of birth"];
-                person.Born = (int)dataTable.Rows[choice - 1]["Born"];
-                person.Mother = (string)dataTable.Rows[choice - 1]["Mother"];
-                person.Father = (string)dataTable.Rows[choice - 1]["Father"];
-                person.VitalStatus = (string)dataTable.Rows[choice - 1]["Vital status"];
-                person.Age = (string)dataTable.Rows[choice - 1]["Age"];
-
+                quitSearch = true;
                 return person;
             }
             else
@@ -507,8 +493,10 @@ namespace Inlämningsuppgift_1_Genealogi
 
         public static void Print(Person person)
         {
+            Console.Clear();
             if (person != null)
             {
+                Program.PrintMenuChoiceHeader(Program.menuChoice);
                 Console.WriteLine($"{person.Id} {person.Name} {person.LastName} {person.Birthplace} {person.CountryOfBirth} {person.Born} {person.Mother} {person.Father} {person.VitalStatus} {person.Age}");
             }
             else

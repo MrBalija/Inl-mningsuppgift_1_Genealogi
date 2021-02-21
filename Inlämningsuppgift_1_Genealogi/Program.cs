@@ -6,6 +6,9 @@ namespace Inlämningsuppgift_1_Genealogi
     class Program
     {
         public static bool quitProgram = false;
+        public static bool quitReadPerson;
+        public static bool quitUpdatePerson;
+        public static bool quitDeletePerson;
         public static int menuChoice;
         static void Main(string[] args)
         {
@@ -74,7 +77,7 @@ namespace Inlämningsuppgift_1_Genealogi
                 Console.WriteLine("[8] Show grandparents for an individual");
                 Console.WriteLine("[9] Show siblings for an individual");
                 Console.WriteLine("[10] Show ALL members of my Family Tree\n");
-                Console.WriteLine("{11}. QUIT\n");
+                Console.WriteLine("{11}. QUIT\n\n");
 
                 Console.Write("> ");
                 if (int.TryParse(Console.ReadLine(), out menuChoice)) //CHECKS USER INPUT: if user input is an integer, pass.
@@ -85,10 +88,10 @@ namespace Inlämningsuppgift_1_Genealogi
                             CRUD.Create(CRUD.person);
                             break;
                         case 2:
-                            CRUD.Read(CRUD.person);
+                            ReadPerson();
                             break;
                         case 3:
-                            UpdatePerson(CRUD.Search(CRUD.person));
+                            UpdatePerson();
                             break;
                         case 4:
                             DeletePerson();
@@ -133,29 +136,23 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
 
-
-
-        private static void ReadPerson(Person person)
+        private static void ReadPerson()
         {
-            bool quitReadPerson = false;
+            quitReadPerson = false;
             while (!quitReadPerson)
             {
 
-                Console.WriteLine("| # | ID |  Name  |  Last name | Birthplace | Country of birth |  Born  |  Mother  |  Father  | Vital status |  Age  |");
-                CRUD.Print(person);
+                CRUD.Read(CRUD.person);
 
             }
         }
 
-        internal static void UpdatePerson(Person person)
+        private static void UpdatePerson()
         {
-            bool quitUpdatePerson = false;
+            quitUpdatePerson = false;
             while (!quitUpdatePerson)
             {
-
-                Console.WriteLine("| # | ID |  Name  |  Last name | Birthplace | Country of birth |  Born  |  Mother  |  Father  | Vital status |  Age  |");
-                CRUD.Print(person);
-
+                CRUD.Update(CRUD.person);
             }
         }
 
