@@ -6,7 +6,7 @@ namespace Inlämningsuppgift_1_Genealogi
     class Program
     {
         public static bool quitProgram = false;
-
+        public static int menuChoice;
         static void Main(string[] args)
         {
             /*
@@ -77,11 +77,9 @@ namespace Inlämningsuppgift_1_Genealogi
                 Console.WriteLine("{11}. QUIT\n");
 
                 Console.Write("> ");
-                string userMenuPickString = Console.ReadLine();
-
-                if (int.TryParse(userMenuPickString, out int userMenuPick)) //CHECKS USER INPUT: if user input is an integer, pass.
+                if (int.TryParse(Console.ReadLine(), out menuChoice)) //CHECKS USER INPUT: if user input is an integer, pass.
                 {
-                    switch (userMenuPick)
+                    switch (menuChoice)
                     {
                         case 1:
                             CreatePerson(); //CHOICE 1: take user to 'Add person' page - to add a person to the table.
@@ -134,7 +132,7 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
- 
+
 
         internal static void CreatePerson()
         {
@@ -147,35 +145,10 @@ namespace Inlämningsuppgift_1_Genealogi
 
             while (!quitReadPerson)
             {
-                Console.WriteLine("\n\nCRUD --> \"R\" = Read:\n" +
-                          "- Read fetches and shows full information of a relative.\n\n");
-
-                Console.WriteLine("[1] Search person by Name and Last name");
-                Console.WriteLine("[2] Search person by ID\n\n");
-                Console.WriteLine("{11}. QUIT\n\n");
-
-                Console.Write("> ");
-                var userChoice = Convert.ToInt32(Console.ReadLine());
-
-                switch (userChoice)
-                {
-                    case 1:
-
-                        break;
-                    case 2:
-                        break;
-                    case 11:
-                        quitReadPerson = true;
-                        break;
-                    default:
-                        Console.Clear();
-                        Console.WriteLine("\n\n\n- There's no such option.");
-                        break;
-                }
+                CRUD.Print(CRUD.Search(CRUD.person));
             }
 
         }
-
 
         internal static void UpdatePerson(Person person)
         {
@@ -185,7 +158,7 @@ namespace Inlämningsuppgift_1_Genealogi
 
                 Console.WriteLine("| # | ID |  Name  |  Last name | Birthplace | Country of birth |  Born  |  Mother  |  Father  | Vital status |  Age  |");
                 CRUD.Print(person);
-            
+
             }
         }
 
@@ -193,7 +166,6 @@ namespace Inlämningsuppgift_1_Genealogi
         {
             throw new NotImplementedException();
         }
-
 
 
         private static void ListAllAfterBirthplace()
@@ -233,6 +205,37 @@ namespace Inlämningsuppgift_1_Genealogi
             while (!quitSearch)
             {
                 CRUD.Search(CRUD.person);
+            }
+        }
+
+
+        public static void PrintMenuChoiceHeader(int menuChoice)
+        {
+            switch (menuChoice)
+            {
+                case 1:
+                    Console.WriteLine("----------------------------------------------------------------");
+                    Console.WriteLine("   - Create: lets you create and add a new person to the table. ");
+                    Console.WriteLine("----------------------------------------------------------------");
+                    break;
+                case 2:
+                    Console.WriteLine("----------------------------------------------------------------");
+                    Console.WriteLine("   - READ: fetches and shows full information of an person.     ");
+                    Console.WriteLine("----------------------------------------------------------------");
+                    break;
+                case 3:
+                    Console.WriteLine("----------------------------------------------------------------");
+                    Console.WriteLine("   - UPDATE: updates information of an existing person.         ");
+                    Console.WriteLine("----------------------------------------------------------------");
+                    break;
+                case 4:
+                    Console.WriteLine("----------------------------------------------------------------");
+                    Console.WriteLine("   - DELETE: removes a person indefinately from the table.      ");
+                    Console.WriteLine("----------------------------------------------------------------");
+                    break;
+                default:
+                    // DO nothing :).
+                    break;
             }
         }
 
