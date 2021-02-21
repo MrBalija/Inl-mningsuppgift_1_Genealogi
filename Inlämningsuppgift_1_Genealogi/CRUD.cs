@@ -655,6 +655,20 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
+        public static void PrintChildren(Person person)
+        {
+            Console.Clear();
+            Program.PrintMenuChoiceHeader(Program.menuChoice);
+            Console.WriteLine("\n\n|#| ID | Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
+            Console.WriteLine($"{person.Name} {person.LastName}");
+
+            if (Program.menuChoice < 3)
+            {
+                Console.WriteLine("\n\nPress to return...");
+                Console.ReadKey();
+            }
+        }
+
         public static void ClearLastLine() //Clears last line.
         {
             Console.SetCursorPosition(0, Console.CursorTop - 1);

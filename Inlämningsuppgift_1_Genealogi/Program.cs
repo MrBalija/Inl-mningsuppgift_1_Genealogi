@@ -290,6 +290,7 @@ namespace Inlämningsuppgift_1_Genealogi
                 Console.ReadLine();
 
                 CRUD.SearchParent();
+                //CRUD.PrintChildren(CRUD.person);
                 Console.ReadKey();
             }
         }
