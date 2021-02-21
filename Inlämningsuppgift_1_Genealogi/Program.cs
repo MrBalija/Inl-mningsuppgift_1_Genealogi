@@ -192,7 +192,7 @@ namespace Inlämningsuppgift_1_Genealogi
 
             while (!quitSearch)
             {
-                CRUD.Search(CRUD.person);
+                CRUD.Search();
             }
         }
 

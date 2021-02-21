@@ -252,7 +252,7 @@ namespace Inlämningsuppgift_1_Genealogi
             while (!quitUpdatePerson)
             {
                 Print(person);
-                Console.WriteLine("\nWhat information do you wish to update?");
+                Console.WriteLine("\nWhat information do you wish to update?\n");
 
                 Console.WriteLine("[1] Name");
                 Console.WriteLine("[2] Last name");
@@ -263,9 +263,9 @@ namespace Inlämningsuppgift_1_Genealogi
                 Console.WriteLine("[7] Father");
                 Console.WriteLine("[8] VitalStatus");
 
-                Console.WriteLine("{11} VitalStatus");
+                Console.WriteLine("\n{11} Back to menu");
 
-                Console.Write("> ");
+                Console.Write("\n> ");
                 if (int.TryParse(Console.ReadLine(), out int updateChoice))
                 {
                     switch (updateChoice)
@@ -304,14 +304,14 @@ namespace Inlämningsuppgift_1_Genealogi
                 }
                 long rowsAffected = SQLDatabase.database.ExecuteSQL(@"
                             UPDATE My_Family_Tree
-                            SET Name = @Name, [Last name] = @LastName, Birthplace = @Birthplace, CountryOfBirth = @CountryOfBirth, 
-                            Born = @Born, Mother = @Mother, Father = @Father, VitalStatus = @VitalStatus
-                            WHERE id = @id;",
+                            SET Name = @Name, [Last name] = '@LastName', Birthplace = '@Birthplace', [Country Of Birth] = '@CountryOfBirth', 
+                            Born = '@Born', Mother = '@Mother', Father = '@Father', [Vital status] = '@VitalStatus'
+                            WHERE id = '@id';",
                             ("@id", person.Id.ToString()), ("@Name", person.Name), ("@LastName", person.LastName), ("@Birthplace", person.Birthplace),
                             ("@CountryOfBirth", person.CountryOfBirth), ("@Born", person.Born.ToString()), ("@Mother", person.Mother), ("@Father", person.Father),
                             ("@VitalStatus", person.VitalStatus));
                 
-                Console.WriteLine($"Person updated! {rowsAffected} row(s) affected!");
+                Console.WriteLine($"\nPerson updated! {rowsAffected} row(s) affected!");
 
             }
         }
@@ -332,7 +332,6 @@ namespace Inlämningsuppgift_1_Genealogi
                 Age = row["city"].ToString()
             };
         }
-
 
 
         public static Person Search()
@@ -398,7 +397,7 @@ namespace Inlämningsuppgift_1_Genealogi
             {
                 Console.Clear();
                 Program.PrintMenuChoiceHeader(Program.menuChoice);
-                Console.WriteLine("\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n\n");
+                Console.WriteLine("- Search completed! Persons found: " + dataTable.Rows.Count);
 
                 person.Id = (int)dataTable.Rows[0]["ID"];
                 person.Name = (string)dataTable.Rows[0]["Name"];
@@ -431,8 +430,7 @@ namespace Inlämningsuppgift_1_Genealogi
                 for (int i = 0; i < dataTable.Rows.Count; i++)
                 {
                     DataRow row = dataTable.Rows[i];
-                    Console.WriteLine(@$"[{i + 1}] {row["ID"]}  {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}    
-                                                   {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}"
+                    Console.WriteLine(@$"[{i + 1}] {row["ID"]}  {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}  {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}"
                                      );
                 }
 
@@ -501,8 +499,14 @@ namespace Inlämningsuppgift_1_Genealogi
                 person.VitalStatus = (string)dataTable.Rows[0]["Vital status"];
                 person.Age = (string)dataTable.Rows[0]["Age"];
 
-                Print(person);
-
+                if (Program.menuChoice < 3)
+                {
+                    Print(person);
+                }
+                else
+                {
+                    quitSearch = true;
+                }
                 return person;
             }
             else
@@ -550,8 +554,14 @@ namespace Inlämningsuppgift_1_Genealogi
             person.VitalStatus = (string)dataTable.Rows[choice - 1]["Vital status"];
             person.Age = (string)dataTable.Rows[choice - 1]["Age"];
 
-            Print(person);
-
+            if (Program.menuChoice < 3)
+            {
+                Print(person);
+            }
+            else
+            {
+                quitSearch = true;
+            }
             return person;
         }
 
