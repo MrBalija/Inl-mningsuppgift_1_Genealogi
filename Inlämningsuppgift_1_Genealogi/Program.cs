@@ -77,7 +77,7 @@ namespace Inlämningsuppgift_1_Genealogi
                 Console.WriteLine("[8] Show grandparents for an individual");
                 Console.WriteLine("[9] Show siblings for an individual");
                 Console.WriteLine("[10] Show ALL members of my Family Tree\n");
-                Console.WriteLine("{11}. QUIT\n\n");
+                Console.WriteLine("{11}. QUIT program\n\n");
 
                 Console.Write("> ");
                 if (int.TryParse(Console.ReadLine(), out menuChoice)) //CHECKS USER INPUT: if user input is an integer, pass.
@@ -141,19 +141,13 @@ namespace Inlämningsuppgift_1_Genealogi
             quitReadPerson = false;
             while (!quitReadPerson)
             {
-
                 CRUD.Read(CRUD.person);
-
             }
         }
 
         private static void UpdatePerson()
         {
-            quitUpdatePerson = false;
-            while (!quitUpdatePerson)
-            {
-                CRUD.Update(CRUD.person);
-            }
+             CRUD.Update(CRUD.person);
         }
 
         internal static void DeletePerson()
