@@ -76,7 +76,7 @@ namespace Inlämningsuppgift_1_Genealogi
                 Console.WriteLine("[6] List ALL relatives after year 'Born'");
                 Console.WriteLine("[7] List ALL relatives that starts with a certain letter");
                 Console.WriteLine("[8] Show grandparents for an individual");
-                Console.WriteLine("[9] Show siblings for an individual");
+                Console.WriteLine("[9] Show children for a parent");
                 Console.WriteLine("[10] Show ALL members of my Family Tree\n");
                 Console.WriteLine("{11}. QUIT program\n\n");
 
@@ -110,7 +110,7 @@ namespace Inlämningsuppgift_1_Genealogi
                             ShowGrandparents();
                             break;
                         case 9:
-                            ShowSiblings();
+                            ShowChildren();
                             break;
                         case 10:
                             ShowAllMembers();
@@ -266,12 +266,32 @@ namespace Inlämningsuppgift_1_Genealogi
 
         private static void ShowGrandparents()
         {
-            throw new NotImplementedException();
+            var showGrandparents = false;
+            while (!showGrandparents)
+            {
+                Console.Clear();
+                //PrintMenuChoiceHeader(menuChoice);
+
+                Console.WriteLine("\n\n- Enter the person you wish to look up grandparents for:");
+                Console.Write("> ");
+            }
         }
 
-        private static void ShowSiblings()
+        private static void ShowChildren()
         {
-            throw new NotImplementedException();
+            var showGrandparents = false;
+            while (!showGrandparents)
+            {
+                Console.Clear();
+                PrintMenuChoiceHeader(menuChoice);
+
+                Console.WriteLine("\n\n- Enter parent name you wish to look up children for:");
+                Console.Write("> ");
+                Console.ReadLine();
+
+                CRUD.SearchParent();
+                Console.ReadKey();
+            }
         }
 
         private static void ShowAllMembers()
@@ -334,9 +354,14 @@ namespace Inlämningsuppgift_1_Genealogi
                     Console.WriteLine("   - LISTS ALL relatives starting with a certain letter.        ");
                     Console.WriteLine("----------------------------------------------------------------");
                     break;
+                case 9:
+                    Console.WriteLine("----------------------------------------------------------------");
+                    Console.WriteLine("   - Show children for a parent.                                ");
+                    Console.WriteLine("----------------------------------------------------------------");
+                    break;
                 case 10:
                     Console.WriteLine("----------------------------------------------------------------");
-                    Console.WriteLine("   - Show ALL memmbers of my Family Tree.                       ");
+                    Console.WriteLine("   - Show ALL members of my Family Tree.                       ");
                     Console.WriteLine("----------------------------------------------------------------");
                     break;
                 default:

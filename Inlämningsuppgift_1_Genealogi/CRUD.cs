@@ -605,6 +605,28 @@ namespace Inlämningsuppgift_1_Genealogi
             return person;
         }
 
+        public static Person SearchParent()
+        {
+            DataTable dataTable = SQLDatabase.database.GetDataTable(@$"SELECT Name, [Last name] 
+                                                                       FROM {SQLDatabase.database.DataTableName}
+                                                                       WHERE Mother = '@mother' OR Father = '@father'"
+                                                                    );
+
+            Console.Clear();
+            Program.PrintMenuChoiceHeader(Program.menuChoice);
+
+            Console.WriteLine("\n\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n\n");
+
+            Console.WriteLine("|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
+            for (int i = 0; i < dataTable.Rows.Count; i++)
+            {
+                DataRow row = dataTable.Rows[i];
+                Console.WriteLine(@$"[{i + 1}] {row["Name"]}  {row["Last name"]}"
+                                 );
+            }
+
+            return person;
+        }
 
         // COLUMN AGE: updates the column age with the persons age.
         internal static void UpdateColumnAge(string tableName)
