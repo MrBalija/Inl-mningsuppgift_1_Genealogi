@@ -239,7 +239,7 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
 
-        
+        /*
         public static void ReadPerson(Person person)
         {
             var idParam = ("@id", person.Id);
@@ -266,7 +266,7 @@ namespace Inlämningsuppgift_1_Genealogi
                 return null;
             }
             return GetPersonObject(row.Rows[0]);
-        }
+        }*/
 
         private static Person GetPersonObject(DataRow row)
         {

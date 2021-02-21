@@ -87,8 +87,8 @@ namespace Inlämningsuppgift_1_Genealogi
                             CreatePerson(); //CHOICE 1: take user to 'Add person' page - to add a person to the table.
                             break;
                         case 2:
-                            break;
                             ReadPerson(); //CHOICE 6: take user to the 'Search' page - user can search after a person by name, age, year etc.
+                            break;
                         case 3:
                             UpdatePerson(CRUD.Search(CRUD.person)); //CHOICE 2: take user to the 'Edit person' page - to edit existing person.
                             break;
@@ -96,24 +96,27 @@ namespace Inlämningsuppgift_1_Genealogi
                             DeletePerson(); //CHOICE 3: take user to the 'Delete person' page - to delete existing person.
                             break;
                         case 5:
-                            ShowSiblings(); //CHOICE 5: take user to the 'Show siblings' page - lists the siblings of a person.
+                            ListAllAfterBirthplace(); //CHOICE 5: take user to the 'Show siblings' page - lists the siblings of a person.
                             break;
                         case 6:
-                            SearchPerson(); //CHOICE 6: take user to the 'Search' page - user can search after a person by name, age, year etc.
+                            ListAllAfterYearBorn(); //CHOICE 6: take user to the 'Search' page - user can search after a person by name, age, year etc.
                             break;
-                        case 7: //CHOICE 7: end the program.
+                        case 7:
+                            ListAllAfterLetter(); //CHOICE 6: take user to the 'Search' page - user can search after a person by name, age, year etc.
+                            break;
+                        case 8:
+                            ShowGrandparents(); //CHOICE 4: take user to the 'Show parents' page - lists the parents for a person.
+                            break;
+                        case 9:
+                            ShowSiblings(); //CHOICE 6: take user to the 'Search' page - user can search after a person by name, age, year etc.
+                            break;
+                        case 10:
+                            ShowAllMembers(); //CHOICE 6: take user to the 'Search' page - user can search after a person by name, age, year etc.
+                            break;
+                        case 11: //CHOICE 7: end the program.
                             Console.Clear();
                             Console.WriteLine("\n\n\n- Until we meet again...\n\n\n");
                             quitProgram = true;
-                            break;
-                        case 8:
-                            ShowParents(); //CHOICE 4: take user to the 'Show parents' page - lists the parents for a person.
-                            break;
-                        case 9:
-                            SearchPerson(); //CHOICE 6: take user to the 'Search' page - user can search after a person by name, age, year etc.
-                            break;
-                        case 10:
-                            SearchPerson(); //CHOICE 6: take user to the 'Search' page - user can search after a person by name, age, year etc.
                             break;
                         default: //CHECKS USER INPUT: if user input isn't an integer between 1-7, tell user "no such option".
                             Console.Clear();
@@ -131,6 +134,7 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
+ 
 
         internal static void CreatePerson()
         {
@@ -141,7 +145,7 @@ namespace Inlämningsuppgift_1_Genealogi
         {
             bool quitReadPerson = false;
 
-            while (quitReadPerson)
+            while (!quitReadPerson)
             {
                 Console.WriteLine("\n\nCRUD --> \"R\" = Read:\n" +
                           "- Read fetches and shows full information of a relative.\n\n");
@@ -160,6 +164,9 @@ namespace Inlämningsuppgift_1_Genealogi
                         break;
                     case 2:
                         break;
+                    case 11:
+                        quitReadPerson = true;
+                        break;
                     default:
                         Console.Clear();
                         Console.WriteLine("\n\n\n- There's no such option.");
@@ -168,7 +175,6 @@ namespace Inlämningsuppgift_1_Genealogi
             }
 
         }
-
 
 
         internal static void UpdatePerson(Person person)
@@ -188,12 +194,34 @@ namespace Inlämningsuppgift_1_Genealogi
             throw new NotImplementedException();
         }
 
-        internal static void ShowParents()
+
+
+        private static void ListAllAfterBirthplace()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ListAllAfterYearBorn()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ListAllAfterLetter()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static void ShowGrandparents()
         {
             throw new NotImplementedException();
         }
 
         internal static void ShowSiblings()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ShowAllMembers()
         {
             throw new NotImplementedException();
         }
