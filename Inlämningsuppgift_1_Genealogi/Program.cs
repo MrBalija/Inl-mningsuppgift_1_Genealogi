@@ -82,34 +82,34 @@ namespace Inlämningsuppgift_1_Genealogi
                     switch (menuChoice)
                     {
                         case 1:
-                            CreatePerson(); //CHOICE 1: take user to 'Add person' page - to add a person to the table.
+                            CRUD.Create(CRUD.person);
                             break;
                         case 2:
-                            ReadPerson(); //CHOICE 6: take user to the 'Search' page - user can search after a person by name, age, year etc.
+                            CRUD.Read(CRUD.person);
                             break;
                         case 3:
-                            UpdatePerson(CRUD.Search(CRUD.person)); //CHOICE 2: take user to the 'Edit person' page - to edit existing person.
+                            UpdatePerson(CRUD.Search(CRUD.person));
                             break;
                         case 4:
-                            DeletePerson(); //CHOICE 3: take user to the 'Delete person' page - to delete existing person.
+                            DeletePerson();
                             break;
                         case 5:
-                            ListAllAfterBirthplace(); //CHOICE 5: take user to the 'Show siblings' page - lists the siblings of a person.
+                            ListAllAfterBirthplace();
                             break;
                         case 6:
-                            ListAllAfterYearBorn(); //CHOICE 6: take user to the 'Search' page - user can search after a person by name, age, year etc.
+                            ListAllAfterYearBorn();
                             break;
                         case 7:
-                            ListAllAfterLetter(); //CHOICE 6: take user to the 'Search' page - user can search after a person by name, age, year etc.
+                            ListAllAfterLetter();
                             break;
                         case 8:
-                            ShowGrandparents(); //CHOICE 4: take user to the 'Show parents' page - lists the parents for a person.
+                            ShowGrandparents();
                             break;
                         case 9:
-                            ShowSiblings(); //CHOICE 6: take user to the 'Search' page - user can search after a person by name, age, year etc.
+                            ShowSiblings();
                             break;
                         case 10:
-                            ShowAllMembers(); //CHOICE 6: take user to the 'Search' page - user can search after a person by name, age, year etc.
+                            ShowAllMembers();
                             break;
                         case 11: //CHOICE 7: end the program.
                             Console.Clear();
@@ -134,20 +134,17 @@ namespace Inlämningsuppgift_1_Genealogi
 
 
 
-        internal static void CreatePerson()
-        {
-            CRUD.Create(CRUD.person);
-        }
 
-        private static void ReadPerson()
+        private static void ReadPerson(Person person)
         {
             bool quitReadPerson = false;
-
             while (!quitReadPerson)
             {
-                CRUD.Print(CRUD.Search(CRUD.person));
-            }
 
+                Console.WriteLine("| # | ID |  Name  |  Last name | Birthplace | Country of birth |  Born  |  Mother  |  Father  | Vital status |  Age  |");
+                CRUD.Print(person);
+
+            }
         }
 
         internal static void UpdatePerson(Person person)

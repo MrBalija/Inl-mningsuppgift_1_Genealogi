@@ -8,26 +8,26 @@ namespace Inlämningsuppgift_1_Genealogi
 {
     class CRUD
     {
-        // FILL FORM: displays a form with the properties/information to fill in for a new person that is added to the list.
 
-        public static bool quitAddPerson;
+        public static bool quitCreatePerson;
         public static string personBorn;
         public static Person person = new Person();
 
-        // CRUD --> "C" = Create:
+
         // CREATE: Creates an objekt Person
         public static void Create(Person person)
         {
-            quitAddPerson = false;
+            quitCreatePerson = false;
 
             // CLEAR FORM: resets the form.
             ClearCreate(person, out string[] checkBox, out string[] checkedBox);
 
             var fillInformationCounter = 0;
-            while (!quitAddPerson)
+            while (!quitCreatePerson)
             {
                 Console.Clear();
-                Console.WriteLine("\n\n\n- Add a person to the table by filling in current information:\n" +
+                Program.PrintMenuChoiceHeader(1);
+                Console.WriteLine("\n\n- Add a person to the table by filling in current information:\n" +
                                   "  (NOTE: Vital status = Alive or Deceased)\n");
                 Console.WriteLine(checkBox[0] + " Name: " + person.Name + "\n" +
                                   checkBox[1] + " Last name: " + person.LastName + "\n" +
@@ -199,7 +199,7 @@ namespace Inlämningsuppgift_1_Genealogi
                     SQLDatabase.InsertPersonToTable(person.Name, person.LastName, person.Birthplace, person.CountryOfBirth,
                                                     Convert.ToInt32(person.Born), person.Mother, person.Father, person.VitalStatus);
                     UpdateColumnAge(SQLDatabase.database.DataTableName);
-                    quitAddPerson = true;
+                    quitCreatePerson = true;
                 }
             }
         }
@@ -238,34 +238,16 @@ namespace Inlämningsuppgift_1_Genealogi
             person.VitalStatus = "";
         }
 
-
-        /*
-        public static void ReadPerson(Person person)
+        // READ: looks for a person in the database and prints out the info.
+        public static void Read(Person person)
         {
-            var idParam = ("@id", person.Id);
-
-            var sql = $"SELECT * FROM People WHERE id=@id";
-            DataTable dt = SQLDatabase.GetDataTable(sql, idParam);
-            SQLDatabase.ReadDataTable(dt);
-            Menu.ContinueAndClear();
-        }
-
-        // CRUD --> "R" = Read:
-        // Söker efter person i databasen, baserat på personobjektet.
-        public Person Read(Person person)
-        {
-            var databas = new Databas { DatabaseName = DatabaseName };
-
-            var row = databas.GetDataTable(@"SELECT TOP 1 * 
-                                             FROM People
-                                             WHERE firstName LIKE @id",
-                                             ("@id", person.Id.ToString())
-                                          );
-            if (row.Rows.Count == 0)
+            bool quitReadPerson = false;
+            while (!quitReadPerson)
             {
-                return null;
+                Search(CRUD.person);
+                Console.WriteLine("| # | ID |  Name  |  Last name | Birthplace | Country of birth |  Born  |  Mother  |  Father  | Vital status |  Age  |");
+                Print(person);
             }
-            return GetPersonObject(row.Rows[0]);
         }
 
         private static Person GetPersonObject(DataRow row)
@@ -283,16 +265,26 @@ namespace Inlämningsuppgift_1_Genealogi
                 VitalStatus = row["city"].ToString(),
                 Age = row["city"].ToString()
             };
+        }
+
+
+        /*
+        public static void ReadPerson(Person person)
+        {
+            var idParam = ("@id", person.Id);
+
+            var sql = $"SELECT * FROM People WHERE id=@id";
+            DataTable dt = SQLDatabase.GetDataTable(sql, idParam);
+            SQLDatabase.ReadDataTable(dt);
+            Menu.ContinueAndClear();
         }*/
-
-
 
         public static Person Search(Person person)
         {
             Console.Clear();
             Program.PrintMenuChoiceHeader(Program.menuChoice);
 
-            Console.WriteLine("\n- Please specify search option for the database.\n");
+            Console.WriteLine("- Please specify search option for the database.\n");
             Console.WriteLine("[1] Search person by Name and Last name");
             Console.WriteLine("[2] Search person by ID");
             Console.WriteLine("[3] Search ALL\n\n");
@@ -307,7 +299,7 @@ namespace Inlämningsuppgift_1_Genealogi
                         break;
                     case 2:
                         person = SearchById();
-                        break;                    
+                        break;
                     case 3:
                         person = SearchAll();
                         break;
@@ -325,8 +317,6 @@ namespace Inlämningsuppgift_1_Genealogi
             Console.Write("Enter name: ");
             string searchName = Console.ReadLine();
 
-            CodeServices.codeservices.ClearLastLine();
-            CodeServices.codeservices.ClearLastLine();
             Console.Write("\nEnter last name: ");
             string searchLastName = Console.ReadLine();
 
