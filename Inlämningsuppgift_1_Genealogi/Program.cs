@@ -58,14 +58,23 @@ namespace Inlämningsuppgift_1_Genealogi
             {
                 Console.Title = "Geneanalogy    |    Database: " + SQLDatabase.database.DatabaseName + "    |    Table: " + SQLDatabase.database.DataTableName;
                 Console.Clear();
-                Console.WriteLine("*** MENU ***\n");
-                Console.WriteLine("1. Add person");
-                Console.WriteLine("2. Edit person");
-                Console.WriteLine("3. Delete person");
-                Console.WriteLine("4. Show parents");
-                Console.WriteLine("5. Show siblings");
-                Console.WriteLine("6. Search");
-                Console.WriteLine("7. Quit\n");
+                Console.WriteLine("-------------------");
+                Console.WriteLine("      M E N U     ");
+                Console.WriteLine("-------------------\n");
+                Console.WriteLine("- EDITING");
+                Console.WriteLine("[1] Create person");
+                Console.WriteLine("[2] Read person");
+                Console.WriteLine("[3] Update person");
+                Console.WriteLine("[4] Delete person\n");
+
+                Console.WriteLine("- SHOW LISTS");
+                Console.WriteLine("[5] List ALL relatives after 'Birthplace'");
+                Console.WriteLine("[6] List ALL relatives after year 'Born'");
+                Console.WriteLine("[7] List ALL relatives that starts with a certain letter");
+                Console.WriteLine("[8] Show grandparents for an individual");
+                Console.WriteLine("[9] Show siblings for an individual");
+                Console.WriteLine("[10] Show ALL members of my Family Tree\n");
+                Console.WriteLine("{11}. QUIT\n");
 
                 Console.Write("> ");
                 string userMenuPickString = Console.ReadLine();
@@ -75,16 +84,16 @@ namespace Inlämningsuppgift_1_Genealogi
                     switch (userMenuPick)
                     {
                         case 1:
-                            AddPerson(); //CHOICE 1: take user to 'Add person' page - to add a person to the table.
+                            CreatePerson(); //CHOICE 1: take user to 'Add person' page - to add a person to the table.
                             break;
                         case 2:
-                            EditPerson(); //CHOICE 2: take user to the 'Edit person' page - to edit existing person.
                             break;
+                            ReadPerson(); //CHOICE 6: take user to the 'Search' page - user can search after a person by name, age, year etc.
                         case 3:
-                            DeletePerson(); //CHOICE 3: take user to the 'Delete person' page - to delete existing person.
+                            UpdatePerson(CRUD.Search(CRUD.person)); //CHOICE 2: take user to the 'Edit person' page - to edit existing person.
                             break;
                         case 4:
-                            ShowParents(); //CHOICE 4: take user to the 'Show parents' page - lists the parents for a person.
+                            DeletePerson(); //CHOICE 3: take user to the 'Delete person' page - to delete existing person.
                             break;
                         case 5:
                             ShowSiblings(); //CHOICE 5: take user to the 'Show siblings' page - lists the siblings of a person.
@@ -96,6 +105,15 @@ namespace Inlämningsuppgift_1_Genealogi
                             Console.Clear();
                             Console.WriteLine("\n\n\n- Until we meet again...\n\n\n");
                             quitProgram = true;
+                            break;
+                        case 8:
+                            ShowParents(); //CHOICE 4: take user to the 'Show parents' page - lists the parents for a person.
+                            break;
+                        case 9:
+                            SearchPerson(); //CHOICE 6: take user to the 'Search' page - user can search after a person by name, age, year etc.
+                            break;
+                        case 10:
+                            SearchPerson(); //CHOICE 6: take user to the 'Search' page - user can search after a person by name, age, year etc.
                             break;
                         default: //CHECKS USER INPUT: if user input isn't an integer between 1-7, tell user "no such option".
                             Console.Clear();
@@ -113,14 +131,56 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
-        internal static void AddPerson()
-        { 
+
+        internal static void CreatePerson()
+        {
             CRUD.Create(CRUD.person);
         }
 
-        internal static void EditPerson()
+        private static void ReadPerson()
         {
-            throw new NotImplementedException();
+            bool quitReadPerson = false;
+
+            while (quitReadPerson)
+            {
+                Console.WriteLine("\n\nCRUD --> \"R\" = Read:\n" +
+                          "- Read fetches and shows full information of a relative.\n\n");
+
+                Console.WriteLine("[1] Search person by Name and Last name");
+                Console.WriteLine("[2] Search person by ID\n\n");
+                Console.WriteLine("{11}. QUIT\n\n");
+
+                Console.Write("> ");
+                var userChoice = Convert.ToInt32(Console.ReadLine());
+
+                switch (userChoice)
+                {
+                    case 1:
+
+                        break;
+                    case 2:
+                        break;
+                    default:
+                        Console.Clear();
+                        Console.WriteLine("\n\n\n- There's no such option.");
+                        break;
+                }
+            }
+
+        }
+
+
+
+        internal static void UpdatePerson(Person person)
+        {
+            bool quitUpdatePerson = false;
+            while (!quitUpdatePerson)
+            {
+
+                Console.WriteLine("| # | ID |  Name  |  Last name | Birthplace | Country of birth |  Born  |  Mother  |  Father  | Vital status |  Age  |");
+                CRUD.Print(person);
+            
+            }
         }
 
         internal static void DeletePerson()
@@ -144,7 +204,7 @@ namespace Inlämningsuppgift_1_Genealogi
 
             while (!quitSearch)
             {
-                CRUD.Search();
+                CRUD.Search(CRUD.person);
             }
         }
 

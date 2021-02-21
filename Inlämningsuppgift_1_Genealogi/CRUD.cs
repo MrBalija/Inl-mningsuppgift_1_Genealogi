@@ -16,7 +16,7 @@ namespace Inlämningsuppgift_1_Genealogi
 
         // CRUD --> "C" = Create:
         // CREATE: Creates an objekt Person
-        internal static void Create(Person person)
+        public static void Create(Person person)
         {
             quitAddPerson = false;
 
@@ -205,7 +205,7 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
         // CLEAR FORM: resets the form so that it is empty when new information for the next person is filled.
-        internal static void ClearCreateForm(Person person, out string[] checkBox, out string[] checkedBox)
+        private static void ClearCreateForm(Person person, out string[] checkBox, out string[] checkedBox)
         {
             checkBox = new string[8];
             checkBox[0] = "[ ]";
@@ -239,7 +239,7 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
 
-        /*
+        
         public static void ReadPerson(Person person)
         {
             var idParam = ("@id", person.Id);
@@ -272,18 +272,22 @@ namespace Inlämningsuppgift_1_Genealogi
         {
             return new Person
             {
-                Id = row["age"].ToString(),
-                FirstName = row["firstName"].ToString(),
-                LastName = row["lastName"].ToString(),
-                Address = row["address"].ToString(),
-                City = row["city"].ToString(),
-                Age = (int)row["age"]
+                Id = (int)row["Id"],
+                Name = row["Name"].ToString(),
+                LastName = row["Last name"].ToString(),
+                Birthplace = row["address"].ToString(),
+                CountryOfBirth = row["city"].ToString(),
+                Born = (int)row["age"],
+                Mother = row["city"].ToString(),
+                Father = row["city"].ToString(),
+                VitalStatus = row["city"].ToString(),
+                Age = row["city"].ToString()
             };
         }
-        */
+        
 
 
-        internal static void Search()
+        internal static Person Search(Person person)
         {
             Console.Clear();
             Console.WriteLine("\n\n\n- Please specify search option for the database.\n\n");
@@ -294,19 +298,18 @@ namespace Inlämningsuppgift_1_Genealogi
             switch (searchChoice)
             {
                 case 1:
-                    SearchByNameLastName(SQLDatabase.database.DataTableName);
+                    person = SearchByNameLastName(SQLDatabase.database.DataTableName);
                     break;
                 case 2:
-                    SearchAll(SQLDatabase.database.DataTableName);
+                    person = SearchAll(SQLDatabase.database.DataTableName);
                     break;
                 default:
                     Console.Clear();
                     Console.WriteLine("\n\n\n- There's no such option.");
                     break;
-
             }
+            return person;
         }
-
 
         internal static Person SearchByNameLastName(string tableName)
         {
@@ -431,12 +434,16 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
 
-        private static void Print(Person person)
+        public static void Print(Person person)
         {
             if (person != null)
-                Console.WriteLine($"{person.Name} {person.LastName}, is {person.Age} years and lives on\n");
+            {
+                Console.WriteLine($"{person.Id} {person.Name} {person.LastName} {person.Birthplace} {person.CountryOfBirth} {person.Born} {person.Mother} {person.Father} {person.VitalStatus} {person.Age}");
+            }
             else
+            {
                 Console.WriteLine("Person not found\n\n");
+            }
         }
     }
 }
