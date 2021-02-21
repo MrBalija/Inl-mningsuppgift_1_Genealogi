@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Threading;
 
 namespace Inlämningsuppgift_1_Genealogi
@@ -152,18 +153,56 @@ namespace Inlämningsuppgift_1_Genealogi
 
         internal static void DeletePerson()
         {
-            throw new NotImplementedException();
+            quitDeletePerson = false;
+            while (!quitDeletePerson)
+            {
+                CRUD.Delete(CRUD.person);
+            }
         }
 
 
         private static void ListAllAfterBirthplace()
         {
-            throw new NotImplementedException();
+            Console.Clear();
+            PrintMenuChoiceHeader(menuChoice);
+
+            DataTable dataTable = SQLDatabase.database.GetDataTable(@$"SELECT *
+                                                                       FROM {SQLDatabase.database.DataTableName}
+                                                                       ORDER BY Birthplace;"
+                                                                   );
+
+            Console.WriteLine("\n|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |\n");
+            for (int i = 0; i < dataTable.Rows.Count; i++)
+            {
+                DataRow row = dataTable.Rows[i];
+                Console.WriteLine(@$"[{i + 1}] {row["ID"]} {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}   {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}"
+                                 );
+            }
+
+            Console.WriteLine("\n\nPress any to go back...");
+            Console.ReadKey();
         }
 
         private static void ListAllAfterYearBorn()
         {
-            throw new NotImplementedException();
+            Console.Clear();
+            PrintMenuChoiceHeader(menuChoice);
+
+            DataTable dataTable = SQLDatabase.database.GetDataTable(@$"SELECT *
+                                                                       FROM {SQLDatabase.database.DataTableName}
+                                                                       ORDER BY Born;"
+                                                                   );
+
+            Console.WriteLine("\n|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |\n");
+            for (int i = 0; i < dataTable.Rows.Count; i++)
+            {
+                DataRow row = dataTable.Rows[i];
+                Console.WriteLine(@$"[{i + 1}] {row["ID"]} {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}   {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}"
+                                 );
+            }
+
+            Console.WriteLine("\n\nPress any to go back...");
+            Console.ReadKey();
         }
 
         private static void ListAllAfterLetter()
@@ -183,7 +222,22 @@ namespace Inlämningsuppgift_1_Genealogi
 
         private static void ShowAllMembers()
         {
-            throw new NotImplementedException();
+            Console.Clear();
+            PrintMenuChoiceHeader(menuChoice);
+
+            DataTable dataTable = SQLDatabase.database.GetDataTable(@$"SELECT * 
+                                                                       FROM {SQLDatabase.database.DataTableName}"
+                                                       );
+
+            Console.WriteLine("\n\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n\n");
+
+            Console.WriteLine("|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
+            for (int i = 0; i < dataTable.Rows.Count; i++)
+            {
+                DataRow row = dataTable.Rows[i];
+                Console.WriteLine(@$"[{i + 1}] {row["ID"]} {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}   {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}"
+                                 );
+            }
         }
 
         internal static void SearchPerson()
@@ -219,6 +273,21 @@ namespace Inlämningsuppgift_1_Genealogi
                 case 4:
                     Console.WriteLine("----------------------------------------------------------------");
                     Console.WriteLine("   - DELETE: removes a person indefinately from the table.      ");
+                    Console.WriteLine("----------------------------------------------------------------");
+                    break;
+                case 5:
+                    Console.WriteLine("----------------------------------------------------------------");
+                    Console.WriteLine("   - LISTS ALL relatives in the table by Birthplace.            ");
+                    Console.WriteLine("----------------------------------------------------------------");
+                    break;
+                case 6:
+                    Console.WriteLine("----------------------------------------------------------------");
+                    Console.WriteLine("   - LISTS ALL relatives in the table after year born.          ");
+                    Console.WriteLine("----------------------------------------------------------------");
+                    break;
+                case 10:
+                    Console.WriteLine("----------------------------------------------------------------");
+                    Console.WriteLine("   - LISTS ALL relatives in the table.                          ");
                     Console.WriteLine("----------------------------------------------------------------");
                     break;
                 default:

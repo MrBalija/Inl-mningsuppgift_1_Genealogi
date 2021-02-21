@@ -14,7 +14,7 @@ namespace Inlämningsuppgift_1_Genealogi
 
         // PROPERTIES:
         internal string ConnectionString { get; set; } = @"Data Source=.\SQLExpress;Integrated Security=true;database={0}";
-        internal string DatabaseName { get; set; } = "Family_Database";
+        internal string DatabaseName { get; set; } = "Master";
         internal string DataTableName { get; set; } = "My_Family_Tree";
 
 
@@ -22,7 +22,7 @@ namespace Inlämningsuppgift_1_Genealogi
         internal DataTable GetDataTable(string sqlString, params (string, string)[] parameters)
         {
             var dataTable = new DataTable(); // Förbered Datatable
-            var connectionString = string.Format(ConnectionString, DatabaseName);
+            var connectionString = string.Format(ConnectionString, "Family_Database");
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open(); // Koppla till databasen
@@ -48,7 +48,7 @@ namespace Inlämningsuppgift_1_Genealogi
         internal long ExecuteSQL(string sqlString, params (string, string)[] parameters)
         {
             long rowsAffected = 0;
-            var connectionString = string.Format(ConnectionString, DatabaseName);
+            var connectionString = string.Format(ConnectionString, "Family_Database");
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -233,7 +233,7 @@ namespace Inlämningsuppgift_1_Genealogi
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
                                      values ('Haxhi', 'Rexhepi', 'Likofcë', 'Kosovo', '1942', 'Han Rexhepi', 'Hiti Rexhepi', 'Deceased');"
                                );
-            
+
             // Adds Age-column to the table.
             database.AlterTableAdd(tableName, "Age varchar(30)");
 
@@ -264,7 +264,7 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
         // ADD PERSON: Adds a new person to current table in use.
-        internal static void InsertPersonToTable (string name, string lastName, string birthplace, string countryOfBirth, 
+        internal static void InsertPersonToTable(string name, string lastName, string birthplace, string countryOfBirth,
                                            int born, string mother, string father, string vitalStatus)
         {
             database.ExecuteSQL(@$"insert into {database.DataTableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 

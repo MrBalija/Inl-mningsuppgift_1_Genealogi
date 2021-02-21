@@ -10,6 +10,7 @@ namespace Inlämningsuppgift_1_Genealogi
     {
         public static bool quitSearch;
         public static bool quitCreatePerson;
+        public static bool quitDelete;
         public static string personBorn;
         public static Person person = new Person();
 
@@ -252,7 +253,7 @@ namespace Inlämningsuppgift_1_Genealogi
             while (!quitUpdatePerson)
             {
                 Print(person);
-                Console.WriteLine("\nWhat information do you wish to update?\n");
+                Console.WriteLine("\n\nWhat information do you wish to update?\n");
 
                 Console.WriteLine("[1] Name");
                 Console.WriteLine("[2] Last name");
@@ -268,6 +269,9 @@ namespace Inlämningsuppgift_1_Genealogi
                 Console.Write("\n> ");
                 if (int.TryParse(Console.ReadLine(), out int updateChoice))
                 {
+                    ClearLastLine();
+                    ClearLastLine();
+                    Console.Write("\n\nChange to: ");
                     switch (updateChoice)
                     {
                         case 1:
@@ -297,42 +301,77 @@ namespace Inlämningsuppgift_1_Genealogi
                         case 8:
                             person.VitalStatus = Console.ReadLine();
                             break;
-                        case 9:
-                            quitUpdatePerson = false;
+                        case 11:
+                            quitUpdatePerson = true;
                             break;
                     }
                 }
-                long rowsAffected = SQLDatabase.database.ExecuteSQL(@"
-                            UPDATE My_Family_Tree
-                            SET Name = @Name, [Last name] = '@LastName', Birthplace = '@Birthplace', [Country Of Birth] = '@CountryOfBirth', 
-                            Born = '@Born', Mother = '@Mother', Father = '@Father', [Vital status] = '@VitalStatus'
-                            WHERE id = '@id';",
-                            ("@id", person.Id.ToString()), ("@Name", person.Name), ("@LastName", person.LastName), ("@Birthplace", person.Birthplace),
-                            ("@CountryOfBirth", person.CountryOfBirth), ("@Born", person.Born.ToString()), ("@Mother", person.Mother), ("@Father", person.Father),
-                            ("@VitalStatus", person.VitalStatus));
-                
-                Console.WriteLine($"\nPerson updated! {rowsAffected} row(s) affected!");
 
+                if (updateChoice < 11)
+                {
+
+                    long rowsAffected = SQLDatabase.database.ExecuteSQL(@"
+                            UPDATE My_Family_Tree
+                            SET [Name] = '@Name', [Last name] = '@LastName', Birthplace = '@Birthplace', [Country Of Birth] = '@CountryOfBirth', 
+                            Born = @Born, Mother = '@Mother', Father = '@Father', [Vital status] = '@VitalStatus'
+                            WHERE id = @id;",
+                                ("@id", person.Id.ToString()), ("@Name", person.Name), ("@LastName", person.LastName), ("@Birthplace", person.Birthplace),
+                                ("@CountryOfBirth", person.CountryOfBirth), ("@Born", person.Born.ToString()), ("@Mother", person.Mother), ("@Father", person.Father),
+                                ("@VitalStatus", person.VitalStatus));
+
+                    Console.WriteLine($"\nPerson updated! {rowsAffected} row(s) affected!");
+                    Thread.Sleep(1500);
+                }
             }
         }
 
-        private static Person GetPersonObject(DataRow row)
+        public static void Delete(Person person)
         {
-            return new Person
+            quitDelete = false;
+            Search();
+            while (!quitDelete)
             {
-                Id = (int)row["Id"],
-                Name = row["Name"].ToString(),
-                LastName = row["Last name"].ToString(),
-                Birthplace = row["address"].ToString(),
-                CountryOfBirth = row["city"].ToString(),
-                Born = (int)row["age"],
-                Mother = row["city"].ToString(),
-                Father = row["city"].ToString(),
-                VitalStatus = row["city"].ToString(),
-                Age = row["city"].ToString()
-            };
-        }
+                Program.PrintMenuChoiceHeader(Program.menuChoice);
+                Print(person);
+                Console.WriteLine("\n\nContinue deleting person? (Yes / No)\n\n");
+                Console.Write("> ");
 
+                string deleteChoice = Console.ReadLine().ToUpper();
+                if (!int.TryParse(deleteChoice, out _))
+                {
+                    if (deleteChoice == "YES")
+                    {
+                        long rowsAffected = SQLDatabase.database.ExecuteSQL(@"DELETE FROM My_Family_Tree
+                                                          WHERE id = @id;",
+                                                          ("@id", person.Id.ToString()));
+
+                        Console.WriteLine($"\nPerson deleted! {rowsAffected} row(s) affected!");
+                        Thread.Sleep(1500);
+                        quitDelete = true;
+                    }
+                    else if (deleteChoice.ToString() == "NO")
+                    {
+                        Console.Clear();
+                        Program.PrintMenuChoiceHeader(Program.menuChoice);
+                        Console.WriteLine("\n\n- Deletion canceled!");
+                        Thread.Sleep(1500);
+                        quitDelete = true;
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("\n\n\n- Please only text.");
+                        Thread.Sleep(1100);
+                    }
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("\n\n\n- Attention, only text accepted.");
+                    Thread.Sleep(1100);
+                }
+            }
+        }
 
         public static Person Search()
         {
@@ -348,7 +387,7 @@ namespace Inlämningsuppgift_1_Genealogi
                 Console.WriteLine("[3] Search ALL\n\n");
                 Console.WriteLine("{11}. Back to Menu\n\n");
 
-                Console.WriteLine("> ");
+                Console.Write("> ");
                 if (int.TryParse(Console.ReadLine(), out int userChoice))
                 {
                     switch (userChoice)
@@ -363,7 +402,8 @@ namespace Inlämningsuppgift_1_Genealogi
                             person = SearchAll();
                             break;
                         case 11:
-                            quitSearch = false;
+                            quitSearch = true;
+                            quitDelete = true;
                             Program.quitReadPerson = true;
                             Program.quitUpdatePerson = true;
                             Program.quitDeletePerson = true;
@@ -424,9 +464,9 @@ namespace Inlämningsuppgift_1_Genealogi
             {
                 Console.Clear();
                 Program.PrintMenuChoiceHeader(Program.menuChoice);
-                Console.WriteLine("\n\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n\n");
+                Console.WriteLine("\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n");
 
-                Console.WriteLine("\n\n|#| ID | Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
+                Console.WriteLine("|#| ID | Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
                 for (int i = 0; i < dataTable.Rows.Count; i++)
                 {
                     DataRow row = dataTable.Rows[i];
@@ -524,7 +564,7 @@ namespace Inlämningsuppgift_1_Genealogi
         {
             DataTable dataTable = SQLDatabase.database.GetDataTable(@$"SELECT * 
                                                                        FROM {SQLDatabase.database.DataTableName}"
-                                                                       );
+                                                                   );
 
             Console.Clear();
             Program.PrintMenuChoiceHeader(Program.menuChoice);
@@ -564,7 +604,6 @@ namespace Inlämningsuppgift_1_Genealogi
             }
             return person;
         }
-
 
 
         // COLUMN AGE: updates the column age with the persons age.
