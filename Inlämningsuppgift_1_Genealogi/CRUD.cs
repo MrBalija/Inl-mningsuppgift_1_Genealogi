@@ -315,9 +315,9 @@ namespace Inlämningsuppgift_1_Genealogi
                             SET [Name] = '@Name', [Last name] = '@LastName', Birthplace = '@Birthplace', [Country Of Birth] = '@CountryOfBirth', 
                             Born = @Born, Mother = '@Mother', Father = '@Father', [Vital status] = '@VitalStatus'
                             WHERE id = @id;",
-                                ("@id", person.Id.ToString()), ("@Name", person.Name), ("@LastName", person.LastName), ("@Birthplace", person.Birthplace),
-                                ("@CountryOfBirth", person.CountryOfBirth), ("@Born", person.Born.ToString()), ("@Mother", person.Mother), ("@Father", person.Father),
-                                ("@VitalStatus", person.VitalStatus));
+                            ("@id", person.Id.ToString()), ("@Name", person.Name), ("@LastName", person.LastName), ("@Birthplace", person.Birthplace),
+                            ("@CountryOfBirth", person.CountryOfBirth), ("@Born", person.Born.ToString()), ("@Mother", person.Mother), ("@Father", person.Father),
+                            ("@VitalStatus", person.VitalStatus));
 
                     Console.WriteLine($"\nPerson updated! {rowsAffected} row(s) affected!");
                     Thread.Sleep(1500);

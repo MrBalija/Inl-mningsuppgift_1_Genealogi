@@ -31,7 +31,7 @@ namespace Inlämningsuppgift_1_Genealogi
             Menu();
         }
 
-        internal static void WelcomeIntro() // WELCOME: welcome the user.
+        private static void WelcomeIntro() // WELCOME: welcome the user.
         {
             Console.Title = "";
             Console.WriteLine("\n\n\n- Welcome to My Family-Tree!");
@@ -56,7 +56,7 @@ namespace Inlämningsuppgift_1_Genealogi
             Thread.Sleep(1500);
         }
 
-        internal static void Menu() //MENU: presents the user with a menu of 7 options.
+        private static void Menu() //MENU: presents the user with a menu of 7 options.
         {
             while (!quitProgram)
             {
@@ -136,7 +136,6 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
-
         private static void ReadPerson()
         {
             quitReadPerson = false;
@@ -148,7 +147,7 @@ namespace Inlämningsuppgift_1_Genealogi
 
         private static void UpdatePerson()
         {
-             CRUD.Update(CRUD.person);
+            CRUD.Update(CRUD.person);
         }
 
         internal static void DeletePerson()
@@ -207,15 +206,70 @@ namespace Inlämningsuppgift_1_Genealogi
 
         private static void ListAllAfterLetter()
         {
-            throw new NotImplementedException();
+            var listAllAfterLetter = false;
+            while (!listAllAfterLetter)
+            {
+                Console.Clear();
+                PrintMenuChoiceHeader(menuChoice);
+
+                Console.WriteLine("\n\n- Enter a starting letter of the name of the person to search for:");
+                Console.WriteLine("  (Write 'Quit' to exit)\n\n");
+                Console.Write("> ");
+                string letterChoice = Console.ReadLine();
+
+                string letterChoiceExit = letterChoice.ToUpper();
+
+                letterChoice += "%";
+                var letterParam = ("@letter", letterChoice);
+
+                var sql = (@$"SELECT *
+                          FROM {SQLDatabase.database.DataTableName}
+                          WHERE Name LIKE @letter;");
+
+
+                DataTable dataTable = SQLDatabase.database.GetDataTable(sql, letterParam);
+
+                if (!int.TryParse(letterChoiceExit, out _))
+                {
+                    if (letterChoiceExit == "QUIT")
+                    {
+                        listAllAfterLetter = true;
+                    }
+                    else if (dataTable.Rows.Count > 0)
+                    {
+                        Console.WriteLine("\n|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |\n");
+                        for (int i = 0; i < dataTable.Rows.Count; i++)
+                        {
+                            DataRow row = dataTable.Rows[i];
+                            Console.WriteLine(@$"[{i + 1}] {row["ID"]} {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}   {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}"
+                                             );
+                        }
+
+                        Console.WriteLine("\n\nPress any to go back...");
+                        Console.ReadKey();
+                    }
+                    else if (dataTable.Rows.Count < 1)
+                    {
+                        Console.Write("\n\n\nUnfortunatley there is no such person(s)! :(");
+                        Console.Write("\n\n(Press to return...");
+                        Console.ReadKey();
+                    }
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.Write("\n\n\n- Attention, only letters accepted.");
+                    Thread.Sleep(1100);
+                }
+            }
         }
 
-        internal static void ShowGrandparents()
+        private static void ShowGrandparents()
         {
             throw new NotImplementedException();
         }
 
-        internal static void ShowSiblings()
+        private static void ShowSiblings()
         {
             throw new NotImplementedException();
         }
@@ -225,31 +279,21 @@ namespace Inlämningsuppgift_1_Genealogi
             Console.Clear();
             PrintMenuChoiceHeader(menuChoice);
 
-            DataTable dataTable = SQLDatabase.database.GetDataTable(@$"SELECT * 
-                                                                       FROM {SQLDatabase.database.DataTableName}"
-                                                       );
+            DataTable dataTable = SQLDatabase.database.GetDataTable(@$"SELECT *
+                                                                       FROM {SQLDatabase.database.DataTableName};"
+                                                                   );
 
-            Console.WriteLine("\n\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n\n");
-
-            Console.WriteLine("|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
+            Console.WriteLine("\n|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |\n");
             for (int i = 0; i < dataTable.Rows.Count; i++)
             {
                 DataRow row = dataTable.Rows[i];
                 Console.WriteLine(@$"[{i + 1}] {row["ID"]} {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}   {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}"
                                  );
             }
+
+            Console.WriteLine("\n\nPress any to go back...");
+            Console.ReadKey();
         }
-
-        internal static void SearchPerson()
-        {
-            bool quitSearch = false;
-
-            while (!quitSearch)
-            {
-                CRUD.Search();
-            }
-        }
-
 
         public static void PrintMenuChoiceHeader(int menuChoice)
         {
@@ -285,9 +329,14 @@ namespace Inlämningsuppgift_1_Genealogi
                     Console.WriteLine("   - LISTS ALL relatives in the table after year born.          ");
                     Console.WriteLine("----------------------------------------------------------------");
                     break;
+                case 7:
+                    Console.WriteLine("----------------------------------------------------------------");
+                    Console.WriteLine("   - LISTS ALL relatives starting with a certain letter.        ");
+                    Console.WriteLine("----------------------------------------------------------------");
+                    break;
                 case 10:
                     Console.WriteLine("----------------------------------------------------------------");
-                    Console.WriteLine("   - LISTS ALL relatives in the table.                          ");
+                    Console.WriteLine("   - Show ALL memmbers of my Family Tree.                       ");
                     Console.WriteLine("----------------------------------------------------------------");
                     break;
                 default:
