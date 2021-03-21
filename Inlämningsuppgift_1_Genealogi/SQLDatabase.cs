@@ -190,21 +190,21 @@ namespace Inlämningsuppgift_1_Genealogi
                                      values ('Nasuf', 'Baliu', 'Shtuticë', 'Kosovo', '1947', 'Hat Baliu', 'Sadik Baliu', 'Deceased');
                                   
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                     values ('Jetish', 'Istrefi', 'Bajgorë', 'Kosovo', '1931', 'Dylbere Istrefi', 'Ismer Istrefi', 'Deceased');
+                                     values ('Jetish', 'Istrefi', 'Bajgorë', 'Kosovo', '1931', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                     values ('Zeka', 'Istrefi', 'Bajgorë', 'Kosovo', '1929', 'Dylbere Istrefi', 'Ismer Istrefi', 'Deceased');
+                                     values ('Zeka', 'Istrefi', 'Bajgorë', 'Kosovo', '1929', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                     values ('Fadil', 'Istrefi', 'Bajgorë', 'Kosovo', '1933', 'Dylbere Istrefi', 'Ismer Istrefi', 'Deceased');
+                                     values ('Fadil', 'Istrefi', 'Bajgorë', 'Kosovo', '1933', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                     values ('Mexhit', 'Istrefi', 'Bajgorë', 'Kosovo', '1935', 'Dylbere Istrefi', 'Ismer Istrefi', 'Deceased');
+                                     values ('Mexhit', 'Istrefi', 'Bajgorë', 'Kosovo', '1935', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                     values ('Isa', 'Istrefi', 'Bajgorë', 'Kosovo', '1937', 'Dylbere Istrefi', 'Ismer Istrefi', 'Deceased');
+                                     values ('Isa', 'Istrefi', 'Bajgorë', 'Kosovo', '1937', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                     values ('Mursel', 'Istrefi', 'Bajgorë', 'Kosovo', '1939', 'Dylbere Istrefi', 'Ismer Istrefi', 'Deceased');
+                                     values ('Mursel', 'Istrefi', 'Bajgorë', 'Kosovo', '1939', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                     values ('Muhamet', 'Istrefi', 'Bajgorë', 'Kosovo', '1941', 'Dylbere Istrefi', 'Ismer Istrefi', 'Deceased');
+                                     values ('Muhamet', 'Istrefi', 'Bajgorë', 'Kosovo', '1941', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                     values ('Hanusha', 'Meholli', 'Bajgorë', 'Kosovo', '1929', 'Dylbere Istrefi', 'Ismer Istrefi', 'Deceased');
+                                     values ('Hanusha', 'Meholli', 'Bajgorë', 'Kosovo', '1929', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
                                    
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
                                      values ('Vahide', 'Istrefi', 'Rahov', 'Kosovo', '1937', 'Raba Peci', 'Shiqiri Peci', 'Deceased');
@@ -231,7 +231,27 @@ namespace Inlämningsuppgift_1_Genealogi
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
                                      values ('Hat', 'Baliu', 'Likofcë', 'Kosovo', '1932', 'Han Rexhepi', 'Hiti Rexhepi', 'Deceased');
                                    insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                     values ('Haxhi', 'Rexhepi', 'Likofcë', 'Kosovo', '1942', 'Han Rexhepi', 'Hiti Rexhepi', 'Deceased');"
+                                     values ('Haxhi', 'Rexhepi', 'Likofcë', 'Kosovo', '1942', 'Han Rexhepi', 'Hiti Rexhepi', 'Deceased');
+
+                                   insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                     values ('Imer', 'Istrefi', 'Bajgorë', 'Kosovo', '1905', 'Unknown', 'Unknown', 'Deceased');
+                                   insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                     values ('Dylbere', 'Istrefi', 'Bare', 'Kosovo', '1911', 'Unknown', 'Unknown', 'Deceased');
+
+                                   insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                     values ('Shiqiri', 'Peci', 'Rahov', 'Kosovo', '1902', 'Unknown', 'Unknown', 'Deceased');
+                                   insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                     values ('Raba', 'Peci', 'Rahov', 'Kosovo', '1905', 'Unknown', 'Unknown', 'Deceased');
+
+                                   insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                     values ('Osman', 'Baliu', 'Shtuticë', 'Kosovo', '1905', 'Unknown', 'Unknown', 'Deceased');
+                                   insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                     values ('Hateme', 'Baliu', 'Llaush', 'Kosovo', '1907', 'Unknown', 'Unknown', 'Deceased');
+
+                                   insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                     values ('Hiti', 'Rexhepi', 'Likofcë', 'Kosovo', '1904', 'Unknown', 'Unknown', 'Deceased');
+                                   insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                     values ('Han', 'Rexhepi', 'Prekaz', 'Kosovo', '1907', 'Unknown', 'Unknown', 'Deceased');"
                                );
 
             // Adds Age-column to the table.

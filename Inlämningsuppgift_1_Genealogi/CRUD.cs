@@ -429,10 +429,10 @@ namespace Inlämningsuppgift_1_Genealogi
             Console.Clear();
             Program.PrintMenuChoiceHeader(Program.menuChoice);
 
-            Console.Write("\nEnter name: ");
+            Console.Write("\n\nEnter name: ");
             string searchName = Console.ReadLine();
 
-            Console.Write("\nEnter last name: ");
+            Console.Write("Enter last name: ");
             string searchLastName = Console.ReadLine();
 
 
@@ -628,11 +628,11 @@ namespace Inlämningsuppgift_1_Genealogi
             Console.WriteLine("\n\n- Enter a person to display their grandparents.");
             Console.WriteLine("  (Enter 'QUIT' to exit)");
 
-            Console.Write("\nEnter name: ");
-            string searchName = Console.ReadLine();
+            Console.Write("\n\nEnter name: ");
+            string searchName = Console.ReadLine().ToUpper();
 
-            Console.Write("\nEnter last name: ");
-            string searchLastName = Console.ReadLine();
+            Console.Write("Enter last name: ");
+            string searchLastName = Console.ReadLine().ToUpper();
 
 
             if (searchName == "QUIT" || searchLastName == "QUIT")
@@ -649,7 +649,6 @@ namespace Inlämningsuppgift_1_Genealogi
                                                                                    ("@lastName", searchLastName.ToString())
                                                                                );
                 var personId = (int)dtMotherAndFather.Rows[0]["ID"];
-                //int checkPersonId = Convert.ToInt32(personId);
 
                 if (personId > 22) // CHECKS FOR GRANDPARENTS: if the person entered has an ID higher than 22, then no grandparents exist for that person.
                 {
@@ -670,14 +669,14 @@ namespace Inlämningsuppgift_1_Genealogi
                     string[] fatherArray = storeFullNameFather.Split(" ");
                     var motherName = motherArray[0];  // Stores the persons mothers Name
                     var motherLastName = motherArray[1];  // Stores the persons mothers Last name
-                    var fatherName = fatherArray[2];  // Stores the persons fathers Name
-                    var fatherLastName = fatherArray[3];  // Stores the persons fathers Last name
+                    var fatherName = fatherArray[0];  // Stores the persons fathers Name
+                    var fatherLastName = fatherArray[1];  // Stores the persons fathers Last name
 
                     // MOTHER-side: fetch grandmother and grandfather:
                     DataTable dtGrandparentsMotherSide = SQLDatabase.database.GetDataTable(@$"SELECT Mother, Father 
                                                                                               FROM {SQLDatabase.database.DataTableName}
-                                                                                              WHERE Name = @name 
-                                                                                              AND [Last name] = @lastName;",
+                                                                                              WHERE Name = @motherName 
+                                                                                              AND [Last name] = @motherLastName;",
                                                                                               ("@motherName", motherName),
                                                                                               ("@motherLastName", motherLastName)
                                                                                           );
@@ -688,8 +687,8 @@ namespace Inlämningsuppgift_1_Genealogi
                     // FATHER-side: fetch grandmother and grandfather:
                     DataTable dtGrandparentsFathersSide = SQLDatabase.database.GetDataTable(@$"SELECT Mother, Father 
                                                                                               FROM {SQLDatabase.database.DataTableName}
-                                                                                              WHERE Name = @name 
-                                                                                              AND [Last name] = @lastName;",
+                                                                                              WHERE Name = @fatherName 
+                                                                                              AND [Last name] = @fatherLastName;",
                                                                                               ("@fatherName", fatherName),
                                                                                               ("@fatherLastName", fatherLastName)
                                                                                            );
@@ -700,12 +699,12 @@ namespace Inlämningsuppgift_1_Genealogi
                     Console.Clear();
                     Program.PrintMenuChoiceHeader(Program.menuChoice);
 
-                    Console.WriteLine("\n\n\nGrandparents MOTHER-side:");
-                    Console.WriteLine("\nGrandmother: " + fullNameGrandmotherMotherSide);
+                    Console.WriteLine("\n\nGRANDPARENTS MOTHER-side:");
+                    Console.WriteLine("Grandmother: " + fullNameGrandmotherMotherSide);
                     Console.WriteLine("Grandfather: " + fullNameGrandfatherMotherSide);
 
-                    Console.WriteLine("\n\nGrandparents FATHER-side:");
-                    Console.WriteLine("\nGrandmother: " + fullNameGrandmotherFatherSide);
+                    Console.WriteLine("\n\nGRANDPARENTS FATHER-side:");
+                    Console.WriteLine("Grandmother: " + fullNameGrandmotherFatherSide);
                     Console.WriteLine("Grandfather: " + fullNameGrandfatherFatherSide);
 
                     Console.Write("\n\n(Press to return...)");
