@@ -10,7 +10,10 @@ namespace Inlämningsuppgift_1_Genealogi
         public static bool quitReadPerson;
         public static bool quitUpdatePerson;
         public static bool quitDeletePerson;
+        public static bool quitShowChildren;
         public static int menuChoice;
+
+
         static void Main(string[] args)
         {
             /*
@@ -78,7 +81,7 @@ namespace Inlämningsuppgift_1_Genealogi
                 Console.WriteLine("[8] Show grandparents for an individual");
                 Console.WriteLine("[9] Show children for a parent");
                 Console.WriteLine("[10] Show ALL members of my Family Tree\n");
-                Console.WriteLine("{11}. QUIT program\n\n");
+                Console.WriteLine("{11} QUIT program\n\n");
 
                 Console.Write("> ");
                 if (int.TryParse(Console.ReadLine(), out menuChoice)) //CHECKS USER INPUT: if user input is an integer, pass.
@@ -147,10 +150,14 @@ namespace Inlämningsuppgift_1_Genealogi
 
         private static void UpdatePerson()
         {
-            CRUD.Update(CRUD.person);
+            quitUpdatePerson = false;
+            while (!quitUpdatePerson)
+            {
+                CRUD.Update(CRUD.person);
+            }
         }
 
-        internal static void DeletePerson()
+        private static void DeletePerson()
         {
             quitDeletePerson = false;
             while (!quitDeletePerson)
@@ -158,7 +165,6 @@ namespace Inlämningsuppgift_1_Genealogi
                 CRUD.Delete(CRUD.person);
             }
         }
-
 
         private static void ListAllAfterBirthplace()
         {
@@ -206,8 +212,8 @@ namespace Inlämningsuppgift_1_Genealogi
 
         private static void ListAllAfterLetter()
         {
-            var listAllAfterLetter = false;
-            while (!listAllAfterLetter)
+            var quitListAllAfterLetter = false;
+            while (!quitListAllAfterLetter)
             {
                 Console.Clear();
                 PrintMenuChoiceHeader(menuChoice);
@@ -215,25 +221,25 @@ namespace Inlämningsuppgift_1_Genealogi
                 Console.WriteLine("\n\n- Enter a starting letter of the name of the person to search for:");
                 Console.WriteLine("  (Write 'Quit' to exit)\n\n");
                 Console.Write("> ");
-                string letterChoice = Console.ReadLine();
+                string userStartingLetter = Console.ReadLine();
 
-                string letterChoiceExit = letterChoice.ToUpper();
+                string quitToMenu = userStartingLetter.ToUpper(); // Stores user input to check if the user enters "QUIT".
 
-                letterChoice += "%";
-                var letterParam = ("@letter", letterChoice);
+                userStartingLetter += "%";
+                var startingLetterParam = ("@startingLetter", userStartingLetter);
 
                 var sql = (@$"SELECT *
                           FROM {SQLDatabase.database.DataTableName}
-                          WHERE Name LIKE @letter;");
+                          WHERE Name LIKE @startingLetter;");
 
 
-                DataTable dataTable = SQLDatabase.database.GetDataTable(sql, letterParam);
+                DataTable dataTable = SQLDatabase.database.GetDataTable(sql, startingLetterParam);
 
-                if (!int.TryParse(letterChoiceExit, out _))
+                if (!int.TryParse(quitToMenu, out _))
                 {
-                    if (letterChoiceExit == "QUIT")
+                    if (quitToMenu == "QUIT")
                     {
-                        listAllAfterLetter = true;
+                        quitListAllAfterLetter = true;
                     }
                     else if (dataTable.Rows.Count > 0)
                     {
@@ -270,7 +276,7 @@ namespace Inlämningsuppgift_1_Genealogi
             while (!showGrandparents)
             {
                 Console.Clear();
-                //PrintMenuChoiceHeader(menuChoice);
+                PrintMenuChoiceHeader(menuChoice);
 
                 Console.WriteLine("\n\n- Enter the person you wish to look up grandparents for:");
                 Console.Write("> ");
@@ -279,19 +285,10 @@ namespace Inlämningsuppgift_1_Genealogi
 
         private static void ShowChildren()
         {
-            var showGrandparents = false;
-            while (!showGrandparents)
+            quitShowChildren = false;
+            while (!quitShowChildren)
             {
-                Console.Clear();
-                PrintMenuChoiceHeader(menuChoice);
-
-                Console.WriteLine("\n\n- Enter parent name you wish to look up children for:");
-                Console.Write("> ");
-                Console.ReadLine();
-
-                CRUD.SearchParent();
-                //CRUD.PrintChildren(CRUD.person);
-                Console.ReadKey();
+                CRUD.SearchChildren();
             }
         }
 
@@ -308,7 +305,7 @@ namespace Inlämningsuppgift_1_Genealogi
             for (int i = 0; i < dataTable.Rows.Count; i++)
             {
                 DataRow row = dataTable.Rows[i];
-                Console.WriteLine(@$"[{i + 1}] {row["ID"]} {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}   {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}"
+                Console.WriteLine(@$"[{i + 1}] {row["ID"]} {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}  {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}"
                                  );
             }
 
@@ -362,7 +359,7 @@ namespace Inlämningsuppgift_1_Genealogi
                     break;
                 case 10:
                     Console.WriteLine("----------------------------------------------------------------");
-                    Console.WriteLine("   - Show ALL members of my Family Tree.                       ");
+                    Console.WriteLine("   - Show ALL members of my Family Tree.                        ");
                     Console.WriteLine("----------------------------------------------------------------");
                     break;
                 default:

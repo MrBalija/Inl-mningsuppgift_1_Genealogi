@@ -9,7 +9,8 @@ namespace Inlämningsuppgift_1_Genealogi
     class CRUD
     {
         public static bool quitSearch;
-        public static bool quitCreatePerson;
+        public static bool quitCreate;
+        public static bool quitUpdate;
         public static bool quitDelete;
         public static string personBorn;
         public static Person person = new Person();
@@ -18,16 +19,16 @@ namespace Inlämningsuppgift_1_Genealogi
         // CREATE: Creates an objekt Person
         public static void Create(Person person)
         {
-            quitCreatePerson = false;
+            quitCreate = false;
 
             // CLEAR FORM: resets the form.
             ClearCreate(person, out string[] checkBox, out string[] checkedBox);
 
             var fillInformationCounter = 0;
-            while (!quitCreatePerson)
+            while (!quitCreate)
             {
                 Console.Clear();
-                Program.PrintMenuChoiceHeader(1);
+                Program.PrintMenuChoiceHeader(Program.menuChoice);
                 Console.WriteLine("\n\n- Add a person to the table by filling in current information:\n" +
                                   "  (NOTE: Vital status = Alive or Deceased)\n");
                 Console.WriteLine(checkBox[0] + " Name: " + person.Name + "\n" +
@@ -200,7 +201,7 @@ namespace Inlämningsuppgift_1_Genealogi
                     SQLDatabase.InsertPersonToTable(person.Name, person.LastName, person.Birthplace, person.CountryOfBirth,
                                                     Convert.ToInt32(person.Born), person.Mother, person.Father, person.VitalStatus);
                     UpdateColumnAge(SQLDatabase.database.DataTableName);
-                    quitCreatePerson = true;
+                    quitCreate = true;
                 }
             }
         }
@@ -239,18 +240,18 @@ namespace Inlämningsuppgift_1_Genealogi
             person.VitalStatus = "";
         }
 
-        // READ: looks for a person in the database and prints out the info.
+        // READ: looks for a person in the table and prints out the information.
         public static void Read(Person person)
         {
             Search();
         }
 
-        // READ: looks for a person in the database and prints out the info.
+        // UPDATE: looks for a person in the table and presents the user with the option to update any information.
         public static void Update(Person person)
         {
+            quitUpdate = false;
             Search();
-            bool quitUpdatePerson = false;
-            while (!quitUpdatePerson)
+            while (!quitUpdate)
             {
                 Print(person);
                 Console.WriteLine("\n\nWhat information do you wish to update?\n");
@@ -302,7 +303,7 @@ namespace Inlämningsuppgift_1_Genealogi
                             person.VitalStatus = Console.ReadLine();
                             break;
                         case 11:
-                            quitUpdatePerson = true;
+                            quitUpdate = true;
                             break;
                     }
                 }
@@ -325,6 +326,7 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
+        // DELETE: looks for a person in the table and presents the user with the option to delete a person from the table.
         public static void Delete(Person person)
         {
             quitDelete = false;
@@ -342,8 +344,9 @@ namespace Inlämningsuppgift_1_Genealogi
                     if (deleteChoice == "YES")
                     {
                         long rowsAffected = SQLDatabase.database.ExecuteSQL(@"DELETE FROM My_Family_Tree
-                                                          WHERE id = @id;",
-                                                          ("@id", person.Id.ToString()));
+                                                                              WHERE id = @id;",
+                                                                              ("@id", person.Id.ToString())
+                                                                           );
 
                         Console.WriteLine($"\nPerson deleted! {rowsAffected} row(s) affected!");
                         Thread.Sleep(1500);
@@ -373,6 +376,7 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
+        // SEARCH: presents the user with the option to search for a person either by name & last, id or list all people in the table.
         public static Person Search()
         {
             quitSearch = false;
@@ -404,6 +408,7 @@ namespace Inlämningsuppgift_1_Genealogi
                         case 11:
                             quitSearch = true;
                             quitDelete = true;
+                            quitUpdate = true;
                             Program.quitReadPerson = true;
                             Program.quitUpdatePerson = true;
                             Program.quitDeletePerson = true;
@@ -418,6 +423,7 @@ namespace Inlämningsuppgift_1_Genealogi
             return person;
         }
 
+        // SEARCH by Name and Last name: user can search for a person by name and last name.
         private static Person SearchByNameLastName()
         {
             Console.Clear();
@@ -425,14 +431,19 @@ namespace Inlämningsuppgift_1_Genealogi
 
             Console.Write("\nEnter name: ");
             string searchName = Console.ReadLine();
+
             Console.Write("\nEnter last name: ");
             string searchLastName = Console.ReadLine();
 
+
             DataTable dataTable = SQLDatabase.database.GetDataTable(@$"SELECT * 
                                                                        FROM {SQLDatabase.database.DataTableName} 
-                                                                       WHERE Name = '{searchName}' 
-                                                                       AND [Last name] = '{searchLastName}'"
-                                                                   );
+                                                                       WHERE Name = @name 
+                                                                       AND [Last name] = @lastName;",
+                                                                       ("@name", searchName.ToString()),
+                                                                       ("@lastName", searchLastName.ToString())
+                                                                     );
+
             if (dataTable.Rows.Count == 1)
             {
                 Console.Clear();
@@ -474,7 +485,7 @@ namespace Inlämningsuppgift_1_Genealogi
                                      );
                 }
 
-                Console.WriteLine("\n\n- Pick a person\n");
+                Console.WriteLine("\n\n- Pick a person.\n");
                 Console.Write("> ");
                 var choice = Convert.ToInt32(Console.ReadLine());
 
@@ -504,12 +515,13 @@ namespace Inlämningsuppgift_1_Genealogi
                 Console.Clear();
                 Console.Write("\n\n\nUnfortunatley there is no such person! :(");
 
-                Console.Write("\n\n(Press to return...");
+                Console.Write("\n\n(Press to return...)");
                 Console.ReadKey();
             }
             return person;
         }
 
+        // SEARCH by Id: user can search for a person by ID.
         private static Person SearchById()
         {
             Console.Clear();
@@ -520,7 +532,8 @@ namespace Inlämningsuppgift_1_Genealogi
 
             DataTable dataTable = SQLDatabase.database.GetDataTable(@$"SELECT * 
                                                                        FROM {SQLDatabase.database.DataTableName} 
-                                                                       WHERE Id = '{searchID}'"
+                                                                       WHERE Id = @id;",
+                                                                       ("@id", searchID.ToString())
                                                                    );
             if (dataTable.Rows.Count == 1)
             {
@@ -560,6 +573,7 @@ namespace Inlämningsuppgift_1_Genealogi
             return person;
         }
 
+        // SEARCH All: presents the user with a list of all people in the table.
         public static Person SearchAll()
         {
             DataTable dataTable = SQLDatabase.database.GetDataTable(@$"SELECT * 
@@ -605,31 +619,205 @@ namespace Inlämningsuppgift_1_Genealogi
             return person;
         }
 
-        public static Person SearchParent()
+        // SEARCH Grandparents: user are presented with the grandparents of a person of their search choice in the table.
+        public static Person SearchGrandParent()
         {
-            DataTable dataTable = SQLDatabase.database.GetDataTable(@$"SELECT Name, [Last name] 
-                                                                       FROM {SQLDatabase.database.DataTableName}
-                                                                       WHERE Mother = '@mother' OR Father = '@father'"
-                                                                    );
-
             Console.Clear();
             Program.PrintMenuChoiceHeader(Program.menuChoice);
 
-            Console.WriteLine("\n\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n\n");
+            Console.WriteLine("\n\n- Enter a person to display their grandparents.");
+            Console.WriteLine("  (Enter 'QUIT' to exit)");
 
-            Console.WriteLine("|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
-            for (int i = 0; i < dataTable.Rows.Count; i++)
+            Console.Write("\nEnter name: ");
+            string searchName = Console.ReadLine();
+
+            Console.Write("\nEnter last name: ");
+            string searchLastName = Console.ReadLine();
+
+
+
+            if (searchName == "QUIT" || searchLastName == "QUIT")
             {
-                DataRow row = dataTable.Rows[i];
-                Console.WriteLine(@$"[{i + 1}] {row["Name"]}  {row["Last name"]}"
-                                 );
+                Program.quitShowChildren = true;
             }
+            else
+            {
+                DataTable dtMotherAndFather = SQLDatabase.database.GetDataTable(@$"SELECT ID, Mother, Father 
+                                                                                   FROM {SQLDatabase.database.DataTableName} 
+                                                                                   WHERE Name = @name 
+                                                                                   AND [Last name] = @lastName;",
+                                                                                   ("@name", searchName.ToString()),
+                                                                                   ("@lastName", searchLastName.ToString())
+                                                                               );
+                var personId = (string)dtMotherAndFather.Rows[0]["ID"];
+                int checkPersonId = Convert.ToInt32(personId);
 
+                if (checkPersonId > 22) // CHECK: if the entered person does have any gra
+                {
+                    Console.Clear();
+                    Console.WriteLine("\n\n\nUnfortunatley the person entered does not have grandparents listed! :(");
+
+                    Console.Write("\n\n(Press to return...)");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    // Full name of the Mother and Father of the person from data table is stored - later to be use to fetch grandparents.
+                    var storeFullNameMother = (string)dtMotherAndFather.Rows[0]["Mother"];
+                    var storeFullNameFather = (string)dtMotherAndFather.Rows[0]["Father"];
+
+                    // 
+                    string[] storeParentsArray = storeFullNameMother.Split(" ");
+                    storeParentsArray = storeFullNameFather.Split(" ");
+                    var motherName = storeParentsArray[0];
+                    var motherLastName = storeParentsArray[1];
+                    var fatherName = storeParentsArray[2];
+                    var fatherLastName = storeParentsArray[3];
+
+                    // MOTHER-side: fetch grandmother and grandfather:
+                    DataTable dtGrandparentsMotherSide = SQLDatabase.database.GetDataTable(@$"SELECT Mother, Father 
+                                                                                              FROM {SQLDatabase.database.DataTableName}
+                                                                                              WHERE Name = @name 
+                                                                                              AND [Last name] = @lastName;",
+                                                                                              ("@name", motherName),
+                                                                                              ("@lastName", motherLastName)
+                                                                                          );
+
+                    var storeFullNameGrandmotherMotherSide = (string)dtGrandparentsMotherSide.Rows[0]["Mother"];
+                    var storeFullNameGrandfatherFatherSide = (string)dtGrandparentsMotherSide.Rows[0]["Father"];
+
+
+                    // FATHER-side: fetch grandmother and grandfather:
+
+                    var searchGrandmother = (string)dataTable.Rows[0]["Mother"];
+                    var searchGrandfather = (string)dataTable.Rows[0]["Father"];
+
+                    string[] grandparentsArray = searchGrandmother.Split(" ");
+                    grandparentsArray = searchGrandfather.Split(" ");
+
+                    var grandmotherName = grandparentsArray[0];
+                    var grandmotherLastName = grandparentsArray[1];
+                    var grandfatherName = grandparentsArray[2];
+                    var grandfatherLastName = grandparentsArray[3];
+
+                    DataTable dataTableGrandparents = SQLDatabase.database.GetDataTable(@$"SELECT * 
+                                                                                       FROM {SQLDatabase.database.DataTableName}
+                                                                                       WHERE (Name = @grandmotherName OR Name = @grandfatherName) 
+                                                                                       AND ([Last name] = @grandmotherLastName OR [Last name] = @grandfatherLastName);",
+                                                                                           ("@grandmotherName", grandmotherName),
+                                                                                           ("@grandfatherName", grandfatherName),
+                                                                                           ("@grandmotherLastName", grandmotherLastName),
+                                                                                           ("@grandfatherLastName", grandfatherLastName)
+                                                                                       );
+                    Console.Clear();
+                    Program.PrintMenuChoiceHeader(Program.menuChoice);
+
+                    Console.WriteLine("\n\n\nSearch completed! Persons found: " + dataTableGrandparents.Rows.Count + "\n\n");
+
+                    Console.WriteLine("|#| ID | Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
+                    for (int i = 0; i < dataTableGrandparents.Rows.Count; i++)
+                    {
+                        DataRow row = dataTable.Rows[i];
+                        Console.WriteLine(@$"[{i + 1}] {row["ID"]}  {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}  {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}"
+                                         );
+                    }
+                }
+            }
             return person;
         }
 
-        // COLUMN AGE: updates the column age with the persons age.
-        internal static void UpdateColumnAge(string tableName)
+        // SEARCH Children: user are presented with children of a parent of their search choice in the table.
+        public static Person SearchChildren()
+        {
+            Console.Clear();
+            Program.PrintMenuChoiceHeader(Program.menuChoice);
+
+            Console.WriteLine("\n\n- Enter a parent to display their children.");
+            Console.WriteLine("  (Enter 'QUIT' to exit)");
+
+            Console.Write("\nParent full name: ");
+            string searchParent = Console.ReadLine().ToUpper();
+
+            if (searchParent == "QUIT")
+            {
+                Program.quitShowChildren = true;
+            }
+            else
+            {
+                DataTable dataTable = SQLDatabase.database.GetDataTable(@$"SELECT ID, Name, [Last name], Mother, Father 
+                                                                           FROM {SQLDatabase.database.DataTableName}
+                                                                           WHERE Mother = @mother 
+                                                                           OR Father = @father;",
+                                                                           ("@mother", searchParent.ToString()),
+                                                                           ("@father", searchParent.ToString())
+                                                                        );
+                if (dataTable.Rows.Count == 1)
+                {
+                    Console.Clear();
+                    Program.PrintMenuChoiceHeader(Program.menuChoice);
+                    Console.WriteLine("- Search completed! Persons found: " + dataTable.Rows.Count);
+
+                    person.Id = (int)dataTable.Rows[0]["ID"];
+                    person.Name = (string)dataTable.Rows[0]["Name"];
+                    person.LastName = (string)dataTable.Rows[0]["Last name"];
+                    person.Mother = (string)dataTable.Rows[0]["Mother"];
+                    person.Father = (string)dataTable.Rows[0]["Father"];
+
+                    PrintChildren(person);
+                }
+                else if (dataTable.Rows.Count > 1)
+                {
+                    Console.Clear();
+                    Program.PrintMenuChoiceHeader(Program.menuChoice);
+
+                    Console.WriteLine("\n\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n\n");
+
+                    Console.WriteLine("|#|ID| Name | Last name | Mother | Father |");
+                    for (int i = 0; i < dataTable.Rows.Count; i++)
+                    {
+                        DataRow row = dataTable.Rows[i];
+                        Console.WriteLine(@$"[{i + 1}] {row["ID"]}  {row["Name"]}  {row["Last name"]}  {row["Mother"]}  {row["Father"]}"
+                                         );
+                    }
+
+                    Console.WriteLine("\n\n- Pick a child for further details.\n");
+                    Console.Write("> ");
+                    var choice = Convert.ToInt32(Console.ReadLine());
+
+                    var personId = (int)dataTable.Rows[choice - 1]["ID"];
+
+                    DataTable dataTableUserPick = SQLDatabase.database.GetDataTable(@$"SELECT * 
+                                                                                       FROM {SQLDatabase.database.DataTableName}
+                                                                                       WHERE ID = @id;",
+                                                                                       ("@id", personId.ToString())
+                                                                                   );
+                    person.Id = (int)dataTableUserPick.Rows[0]["ID"];
+                    person.Name = (string)dataTableUserPick.Rows[0]["Name"];
+                    person.LastName = (string)dataTableUserPick.Rows[0]["Last name"];
+                    person.Birthplace = (string)dataTableUserPick.Rows[0]["Birthplace"];
+                    person.CountryOfBirth = (string)dataTableUserPick.Rows[0]["Country of birth"];
+                    person.Born = (int)dataTableUserPick.Rows[0]["Born"];
+                    person.Mother = (string)dataTableUserPick.Rows[0]["Mother"];
+                    person.Father = (string)dataTableUserPick.Rows[0]["Father"];
+                    person.VitalStatus = (string)dataTableUserPick.Rows[0]["Vital status"];
+                    person.Age = (string)dataTableUserPick.Rows[0]["Age"];
+
+                    PrintChildren(person);
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.Write("\n\n\nUnfortunatley the person does not excist or has no children listed in the table! :(");
+
+                    Console.Write("\n\n(Press to return...)");
+                    Console.ReadKey();
+                }
+            }
+            return person;
+        }
+
+        // COLUMN AGE: updates the column age with the persons age, alternatively 'R.I.P' if person has passed away.
+        public static void UpdateColumnAge(string tableName)
         {
             SQLDatabase.database.ExecuteSQL(@$"UPDATE {tableName}
                                                SET Age = CASE 
@@ -637,15 +825,15 @@ namespace Inlämningsuppgift_1_Genealogi
                                                THEN 'R.I.P'
                                                ELSE CONVERT(varchar(30), 2021 - Born)
                                                END"
-                                   );
+                                            );
         }
 
-
+        // PRINT Person: prints full information of a person.
         public static void Print(Person person)
         {
             Console.Clear();
             Program.PrintMenuChoiceHeader(Program.menuChoice);
-            Console.WriteLine("\n\n|#| ID | Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
+            Console.WriteLine("\n\n| ID | Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
             Console.WriteLine($"{person.Id} {person.Name} {person.LastName} {person.Birthplace} {person.CountryOfBirth} {person.Born} {person.Mother} {person.Father} {person.VitalStatus} {person.Age}");
 
             if (Program.menuChoice < 3)
@@ -655,21 +843,20 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
+        // PRINT Children: prints full information of a child.
         public static void PrintChildren(Person person)
         {
             Console.Clear();
             Program.PrintMenuChoiceHeader(Program.menuChoice);
-            Console.WriteLine("\n\n|#| ID | Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
-            Console.WriteLine($"{person.Name} {person.LastName}");
+            Console.WriteLine("\n\n| ID | Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
+            Console.WriteLine($"{person.Id} {person.Name} {person.LastName} {person.Birthplace} {person.CountryOfBirth} {person.Born} {person.Mother} {person.Father} {person.VitalStatus} {person.Age}");
 
-            if (Program.menuChoice < 3)
-            {
-                Console.WriteLine("\n\nPress to return...");
-                Console.ReadKey();
-            }
+            Console.WriteLine("\n\nPress to return...");
+            Console.ReadKey();
         }
 
-        public static void ClearLastLine() //Clears last line.
+        //CLEAR: clears last line.
+        public static void ClearLastLine()
         {
             Console.SetCursorPosition(0, Console.CursorTop - 1);
             Console.Write(new string(' ', Console.BufferWidth));

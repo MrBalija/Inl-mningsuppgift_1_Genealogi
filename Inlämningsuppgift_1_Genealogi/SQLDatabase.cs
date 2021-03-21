@@ -13,16 +13,16 @@ namespace Inlämningsuppgift_1_Genealogi
         internal static SQLDatabase database = new SQLDatabase();
 
         // PROPERTIES:
-        internal string ConnectionString { get; set; } = @"Data Source=.\SQLExpress;Integrated Security=true;database={0}";
-        internal string DatabaseName { get; set; } = "Master";
-        internal string DataTableName { get; set; } = "My_Family_Tree";
+        private string ConnectionString { get; set; } = @"Data Source=.\SQLExpress;Integrated Security=true;database={0}";
+        public string DatabaseName { get; set; } = "Family_Database";
+        public string DataTableName { get; set; } = "My_Family_Tree";
 
 
         // DATA TABLE: Fetches data tables from the database.
-        internal DataTable GetDataTable(string sqlString, params (string, string)[] parameters)
+        public DataTable GetDataTable(string sqlString, params (string, string)[] parameters)
         {
             var dataTable = new DataTable(); // Förbered Datatable
-            var connectionString = string.Format(ConnectionString, "Family_Database");
+            var connectionString = string.Format(ConnectionString, DatabaseName);
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open(); // Koppla till databasen
@@ -45,10 +45,10 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
         // SQL-EXECUTER: Executes SQL-commands sent to the database.
-        internal long ExecuteSQL(string sqlString, params (string, string)[] parameters)
+        public long ExecuteSQL(string sqlString, params (string, string)[] parameters)
         {
             long rowsAffected = 0;
-            var connectionString = string.Format(ConnectionString, "Family_Database");
+            var connectionString = string.Format(ConnectionString, DatabaseName);
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -65,7 +65,7 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
         // DATABASE: Creates a database.
-        internal static void CreateDatabase(string databaseName)
+        public static void CreateDatabase(string databaseName)
         {
             if (database.DoesDatabaseExist(databaseName) == false)
             {
@@ -77,7 +77,7 @@ namespace Inlämningsuppgift_1_Genealogi
             }
             /*else
             {
-                // If database exist, create a databse based on the 'tableName' input and add '_New' at the end of the name.
+                // If database exist, create a database based on the 'tableName' input and add '_New' at the end of the name.
                 database.ExecuteSQL($"CREATE DATABASE {databaseName}_New;");
 
                 // Direct the user to the proper database = 'databaseName' input.
@@ -86,7 +86,7 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
         // DOES DATABASE EXIST: Checks if database name exists.
-        internal bool DoesDatabaseExist(string name)
+        private bool DoesDatabaseExist(string name)
         {
             var dataBase = GetDataTable(@$"SELECT name 
                                            FROM sys.databases
@@ -100,7 +100,7 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
         // TABLE: Creates a table.
-        internal static void CreateTable(string tableName)
+        public static void CreateTable(string tableName)
         {
             if (database.DoesTableExist(tableName) == false)
             {
@@ -139,7 +139,7 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
         //TABLE DATA: Adds data to table with family and relatives, 3 generations back.
-        internal static void AddTableData(string tableName)
+        private static void AddTableData(string tableName)
         {
             // Inserts data about persons to the table.
             database.ExecuteSQL(@$"insert into {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
@@ -256,7 +256,7 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
         // ADD COLUMN: Adds a new column with data type to a desired table.
-        internal void AlterTableAdd(string table, string columnsWithDataType)
+        private void AlterTableAdd(string table, string columnsWithDataType)
         {
             ExecuteSQL(@$"ALTER TABLE {table}
                           ADD {columnsWithDataType}"
