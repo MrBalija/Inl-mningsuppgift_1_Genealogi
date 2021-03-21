@@ -620,7 +620,7 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
         // SEARCH Grandparents: user are presented with the grandparents of a person of their search choice in the table.
-        public static Person SearchGrandParent()
+        public static Person SearchGrandparents()
         {
             Console.Clear();
             Program.PrintMenuChoiceHeader(Program.menuChoice);
@@ -635,10 +635,9 @@ namespace Inlämningsuppgift_1_Genealogi
             string searchLastName = Console.ReadLine();
 
 
-
             if (searchName == "QUIT" || searchLastName == "QUIT")
             {
-                Program.quitShowChildren = true;
+                Program.quitShowGrandparents = true;
             }
             else
             {
@@ -649,10 +648,10 @@ namespace Inlämningsuppgift_1_Genealogi
                                                                                    ("@name", searchName.ToString()),
                                                                                    ("@lastName", searchLastName.ToString())
                                                                                );
-                var personId = (string)dtMotherAndFather.Rows[0]["ID"];
-                int checkPersonId = Convert.ToInt32(personId);
+                var personId = (int)dtMotherAndFather.Rows[0]["ID"];
+                //int checkPersonId = Convert.ToInt32(personId);
 
-                if (checkPersonId > 22) // CHECK: if the entered person does have any gra
+                if (personId > 22) // CHECKS FOR GRANDPARENTS: if the person entered has an ID higher than 22, then no grandparents exist for that person.
                 {
                     Console.Clear();
                     Console.WriteLine("\n\n\nUnfortunatley the person entered does not have grandparents listed! :(");
@@ -662,65 +661,55 @@ namespace Inlämningsuppgift_1_Genealogi
                 }
                 else
                 {
-                    // Full name of the Mother and Father of the person from data table is stored - later to be use to fetch grandparents.
+                    // Full name of the Mother and Father of the person from data table are stored in a variable - later to be use to fetch grandparents.
                     var storeFullNameMother = (string)dtMotherAndFather.Rows[0]["Mother"];
                     var storeFullNameFather = (string)dtMotherAndFather.Rows[0]["Father"];
 
-                    // 
-                    string[] storeParentsArray = storeFullNameMother.Split(" ");
-                    storeParentsArray = storeFullNameFather.Split(" ");
-                    var motherName = storeParentsArray[0];
-                    var motherLastName = storeParentsArray[1];
-                    var fatherName = storeParentsArray[2];
-                    var fatherLastName = storeParentsArray[3];
+                    // Since the Mother & Father column holds full name (name and last name), we need to split it into two strings: name and last name.
+                    string[] motherArray = storeFullNameMother.Split(" ");
+                    string[] fatherArray = storeFullNameFather.Split(" ");
+                    var motherName = motherArray[0];  // Stores the persons mothers Name
+                    var motherLastName = motherArray[1];  // Stores the persons mothers Last name
+                    var fatherName = fatherArray[2];  // Stores the persons fathers Name
+                    var fatherLastName = fatherArray[3];  // Stores the persons fathers Last name
 
                     // MOTHER-side: fetch grandmother and grandfather:
                     DataTable dtGrandparentsMotherSide = SQLDatabase.database.GetDataTable(@$"SELECT Mother, Father 
                                                                                               FROM {SQLDatabase.database.DataTableName}
                                                                                               WHERE Name = @name 
                                                                                               AND [Last name] = @lastName;",
-                                                                                              ("@name", motherName),
-                                                                                              ("@lastName", motherLastName)
+                                                                                              ("@motherName", motherName),
+                                                                                              ("@motherLastName", motherLastName)
                                                                                           );
-
-                    var storeFullNameGrandmotherMotherSide = (string)dtGrandparentsMotherSide.Rows[0]["Mother"];
-                    var storeFullNameGrandfatherFatherSide = (string)dtGrandparentsMotherSide.Rows[0]["Father"];
+                    var fullNameGrandmotherMotherSide = (string)dtGrandparentsMotherSide.Rows[0]["Mother"];
+                    var fullNameGrandfatherMotherSide = (string)dtGrandparentsMotherSide.Rows[0]["Father"];
 
 
                     // FATHER-side: fetch grandmother and grandfather:
+                    DataTable dtGrandparentsFathersSide = SQLDatabase.database.GetDataTable(@$"SELECT Mother, Father 
+                                                                                              FROM {SQLDatabase.database.DataTableName}
+                                                                                              WHERE Name = @name 
+                                                                                              AND [Last name] = @lastName;",
+                                                                                              ("@fatherName", fatherName),
+                                                                                              ("@fatherLastName", fatherLastName)
+                                                                                           );
+                    var fullNameGrandmotherFatherSide = (string)dtGrandparentsFathersSide.Rows[0]["Mother"];
+                    var fullNameGrandfatherFatherSide = (string)dtGrandparentsFathersSide.Rows[0]["Father"];
 
-                    var searchGrandmother = (string)dataTable.Rows[0]["Mother"];
-                    var searchGrandfather = (string)dataTable.Rows[0]["Father"];
 
-                    string[] grandparentsArray = searchGrandmother.Split(" ");
-                    grandparentsArray = searchGrandfather.Split(" ");
-
-                    var grandmotherName = grandparentsArray[0];
-                    var grandmotherLastName = grandparentsArray[1];
-                    var grandfatherName = grandparentsArray[2];
-                    var grandfatherLastName = grandparentsArray[3];
-
-                    DataTable dataTableGrandparents = SQLDatabase.database.GetDataTable(@$"SELECT * 
-                                                                                       FROM {SQLDatabase.database.DataTableName}
-                                                                                       WHERE (Name = @grandmotherName OR Name = @grandfatherName) 
-                                                                                       AND ([Last name] = @grandmotherLastName OR [Last name] = @grandfatherLastName);",
-                                                                                           ("@grandmotherName", grandmotherName),
-                                                                                           ("@grandfatherName", grandfatherName),
-                                                                                           ("@grandmotherLastName", grandmotherLastName),
-                                                                                           ("@grandfatherLastName", grandfatherLastName)
-                                                                                       );
                     Console.Clear();
                     Program.PrintMenuChoiceHeader(Program.menuChoice);
 
-                    Console.WriteLine("\n\n\nSearch completed! Persons found: " + dataTableGrandparents.Rows.Count + "\n\n");
+                    Console.WriteLine("\n\n\nGrandparents MOTHER-side:");
+                    Console.WriteLine("\nGrandmother: " + fullNameGrandmotherMotherSide);
+                    Console.WriteLine("Grandfather: " + fullNameGrandfatherMotherSide);
 
-                    Console.WriteLine("|#| ID | Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
-                    for (int i = 0; i < dataTableGrandparents.Rows.Count; i++)
-                    {
-                        DataRow row = dataTable.Rows[i];
-                        Console.WriteLine(@$"[{i + 1}] {row["ID"]}  {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}  {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}"
-                                         );
-                    }
+                    Console.WriteLine("\n\nGrandparents FATHER-side:");
+                    Console.WriteLine("\nGrandmother: " + fullNameGrandmotherFatherSide);
+                    Console.WriteLine("Grandfather: " + fullNameGrandfatherFatherSide);
+
+                    Console.Write("\n\n(Press to return...)");
+                    Console.ReadKey();
                 }
             }
             return person;

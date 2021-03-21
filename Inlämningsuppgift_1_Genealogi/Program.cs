@@ -10,6 +10,7 @@ namespace Inlämningsuppgift_1_Genealogi
         public static bool quitReadPerson;
         public static bool quitUpdatePerson;
         public static bool quitDeletePerson;
+        public static bool quitShowGrandparents;
         public static bool quitShowChildren;
         public static int menuChoice;
 
@@ -272,14 +273,10 @@ namespace Inlämningsuppgift_1_Genealogi
 
         private static void ShowGrandparents()
         {
-            var showGrandparents = false;
-            while (!showGrandparents)
+            quitShowGrandparents = false;
+            while (!quitShowGrandparents)
             {
-                Console.Clear();
-                PrintMenuChoiceHeader(menuChoice);
-
-                Console.WriteLine("\n\n- Enter the person you wish to look up grandparents for:");
-                Console.Write("> ");
+                CRUD.SearchGrandparents();
             }
         }
 
@@ -350,6 +347,11 @@ namespace Inlämningsuppgift_1_Genealogi
                 case 7:
                     Console.WriteLine("----------------------------------------------------------------");
                     Console.WriteLine("   - LISTS ALL relatives starting with a certain letter.        ");
+                    Console.WriteLine("----------------------------------------------------------------");
+                    break;
+                case 8:
+                    Console.WriteLine("----------------------------------------------------------------");
+                    Console.WriteLine("   - Show grandparents for a person.                            ");
                     Console.WriteLine("----------------------------------------------------------------");
                     break;
                 case 9:
