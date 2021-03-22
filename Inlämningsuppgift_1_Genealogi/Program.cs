@@ -81,7 +81,7 @@ namespace Inlämningsuppgift_1_Genealogi
                 Console.WriteLine("[7] List ALL relatives that starts with a certain letter");
                 Console.WriteLine("[8] Show grandparents for an individual");
                 Console.WriteLine("[9] Show children for a parent");
-                Console.WriteLine("[10] Show ALL members of my Family Tree\n");
+                Console.WriteLine("[10] Show ALL members of my Family Tree\n\n");
                 Console.WriteLine("{11} QUIT program\n\n");
 
                 Console.Write("> ");
