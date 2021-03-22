@@ -154,7 +154,7 @@ namespace Inlämningsuppgift_1_Genealogi
             quitUpdatePerson = false;
             while (!quitUpdatePerson)
             {
-                CRUD.Update(CRUD.person);
+                CRUD.Update();
             }
         }
 
@@ -163,7 +163,7 @@ namespace Inlämningsuppgift_1_Genealogi
             quitDeletePerson = false;
             while (!quitDeletePerson)
             {
-                CRUD.Delete(CRUD.person);
+                CRUD.Delete();
             }
         }
 
