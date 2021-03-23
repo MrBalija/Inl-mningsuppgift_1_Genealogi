@@ -104,13 +104,11 @@ namespace Inlämningsuppgift_1_Genealogi
         // TABLE: Creates a table.
         public static void CreateTable(string tableName)
         {
-            database.DataTableName = tableName;
-
             if (database.DoesTableExist(tableName) == false)
             {
                 // Create a table based on the 'tableName' input.
-                var databaseNameParam = ("@databaseName", database.DatabaseName);
-                var dataTableNameParam = ("@dataTableName", database.DataTableName);
+                var databaseNameParam = ("@databaseName", tableName);
+                var dataTableNameParam = ("@dataTableName", tableName);
                 var sqlCreateTable = @"USE @databaseName
                                        CREATE TABLE @dataTableName(
                                        ID int NOT NULL Identity (1,1),
@@ -124,7 +122,7 @@ namespace Inlämningsuppgift_1_Genealogi
                                        [Vital status] varchar(30));";
 
                 database.ExecuteSQL(sqlCreateTable,databaseNameParam, dataTableNameParam);
-                AddTableData(database.DataTableName);
+                AddTableData(tableName);
             }
             /*else if (database.DoesTableExist(tableName + "_New") == false)
             {
@@ -148,10 +146,8 @@ namespace Inlämningsuppgift_1_Genealogi
         //TABLE DATA: Adds data to table with family and relatives, 3 generations back.
         private static void AddTableData(string tableName)
         {
-            database.DataTableName = tableName;
-
             // Inserts data about persons to the table.
-            var dataTableNameParam = ("@dataTableName", database.DataTableName);
+            var dataTableNameParam = ("@dataTableName", tableName);
             var sqlAddTableData = @"insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
                                       values ('Majlinda', 'Balija', 'Mitrovicë', 'Kosovo', '1986', 'Dinore Balija', 'Xhafer Balija', 'Alive');
                                     insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
@@ -269,15 +265,13 @@ namespace Inlämningsuppgift_1_Genealogi
             database.AlterTableAdd(tableName, "Age varchar(30)");
 
             // Updates the age for the persons; if Age = alive -> calculate age, else if Age = deceased -> add R.I.P. 
-            CRUD.UpdateColumnAge(database.DataTableName);
+            CRUD.UpdateColumnAge(tableName);
         }
 
         // DOES TABLE EXIST: Checks if table name exists.
         internal bool DoesTableExist(string tableName)
         {
-            database.DataTableName = tableName;
-
-            var dataTableName = ("@dataTableName", database.DataTableName);
+            var dataTableName = ("@dataTableName", tableName);
             var sqlDoesTableExist = @"SELECT name 
                                       FROM sys.tables
                                       WHERE name = @dataTableName;";
@@ -292,20 +286,33 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
         // ADD COLUMN: Adds a new column with data type to a desired table.
-        private void AlterTableAdd(string table, string columnsWithDataType)
+        private void AlterTableAdd(string tableName, string columnsWithDataType)
         {
-            ExecuteSQL(@$"ALTER TABLE {table}
-                          ADD {columnsWithDataType}"
-                      );
+            var dataTableNameParam = ("@dataTableName", tableName);
+            var columnsWithDataTypeParam = ("@columnsWithDataType", columnsWithDataType);
+            var sqlColumnsWithDataType = @"ALTER TABLE @dataTableName
+                                           ADD @columnsWithDataType";
+
+            ExecuteSQL(sqlColumnsWithDataType, dataTableNameParam, columnsWithDataTypeParam);
         }
 
         // ADD PERSON: Adds a new person to current table in use.
-        internal static void InsertPersonToTable(string name, string lastName, string birthplace, string countryOfBirth,
-                                           int born, string mother, string father, string vitalStatus)
+        internal static void InsertPersonToTable(string name, string lastName, string birthplace, string countryOfBirth, int born, string mother, string father, string vitalStatus)
         {
-            database.ExecuteSQL(@$"insert into {database.DataTableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                     values ('{name}', '{lastName}', '{birthplace}', '{countryOfBirth}', '{born}', '{mother}', '{father}', '{vitalStatus}');"
-                               );
+            var dataTableNameParam = ("@dataTableName", database.DataTableName.ToString());
+            var nameParam = ("@name", name.ToString());
+            var lastNameParam = ("@lastName", lastName.ToString());
+            var birthplaceParam = ("@birthplace", birthplace.ToString());
+            var countryOfBirthParam = ("@countryOfBirth", countryOfBirth.ToString());
+            var bornParam = ("@born", born.ToString());
+            var motherParam = ("@mother", mother.ToString());
+            var fatherParam = ("@father", father.ToString());
+            var vitalStatusParam = ("@vitalStatus", vitalStatus.ToString());
+            var sqlInsertPersonToTable = @"INSERT INTO @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                           VALUES (@name, @lastName, @birthplace, @countryOfBirth, @born, @mother, @father, @vitalStatus);";
+
+            database.ExecuteSQL(sqlInsertPersonToTable, dataTableNameParam, nameParam, lastNameParam, birthplaceParam, countryOfBirthParam, bornParam, motherParam,
+                fatherParam, vitalStatusParam);
         }
     }
 }
