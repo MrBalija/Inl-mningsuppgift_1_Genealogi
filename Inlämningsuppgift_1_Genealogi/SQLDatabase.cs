@@ -14,7 +14,7 @@ namespace Inlämningsuppgift_1_Genealogi
 
         // PROPERTIES:
         private string ConnectionString { get; set; } = @"Data Source=.\SQLExpress;Integrated Security=true;database={0}";
-        public string DatabaseName { get; set; } = "Master";
+        public string DatabaseName { get; set; } = "Family_Tree";
         public string DataTableName { get; set; } = "My_Family_Tree";
 
 
@@ -70,9 +70,9 @@ namespace Inlämningsuppgift_1_Genealogi
             if (database.DoesDatabaseExist(databaseName) == false)
             {
                 // Create a database based on the 'databaseName' input.
-                var databaseNameParam = ("@databaseName", databaseName);
-                var sqlCreateDatabase = @"CREATE DATABASE @databaseName;";
-                database.ExecuteSQL(sqlCreateDatabase, databaseNameParam);
+                //var databaseNameParam = ("@databaseName", databaseName);
+                var sqlCreateDatabase = @"CREATE DATABASE " + databaseName;
+                database.ExecuteSQL(sqlCreateDatabase);
 
                 // Direct the user to the proper database = 'databaseName' input.
                 database.DatabaseName = databaseName;
@@ -88,12 +88,14 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
         // DOES DATABASE EXIST: Checks if database name exists.
-        private bool DoesDatabaseExist(string name)
+        private bool DoesDatabaseExist(string databaseName)
         {
-            var dataBase = GetDataTable(@$"SELECT name 
-                                           FROM sys.databases
-                                           WHERE name = '{name}';"
-                                       );
+            var databaseNameParam = ("@databaseName", databaseName.ToString());
+            var sqlDoesDatabaseExist = @"SELECT name 
+                                         FROM sys.databases
+                                         WHERE name = @databaseName;";
+
+            var dataBase = GetDataTable(sqlDoesDatabaseExist, databaseNameParam);
             if (dataBase == null)
             {
                 return false;
@@ -107,10 +109,10 @@ namespace Inlämningsuppgift_1_Genealogi
             if (database.DoesTableExist(tableName) == false)
             {
                 // Create a table based on the 'tableName' input.
-                var databaseNameParam = ("@databaseName", tableName);
-                var dataTableNameParam = ("@dataTableName", tableName);
-                var sqlCreateTable = @"USE @databaseName
-                                       CREATE TABLE @dataTableName(
+                //var databaseNameParam = ("@databaseName", database.DatabaseName.ToString());
+                //var dataTableNameParam = ("@dataTableName", tableName.ToString());
+                var sqlCreateTable = @$"USE {database.DatabaseName}
+                                       CREATE TABLE {tableName}(
                                        ID int NOT NULL Identity (1,1),
                                        Name varchar(30),
                                        [Last name] varchar(30),
@@ -121,8 +123,8 @@ namespace Inlämningsuppgift_1_Genealogi
                                        Father varchar(30),
                                        [Vital status] varchar(30));";
 
-                database.ExecuteSQL(sqlCreateTable,databaseNameParam, dataTableNameParam);
-                AddTableData(tableName);
+                database.ExecuteSQL(sqlCreateTable);
+                AddTableData(tableName.ToString());
             }
             /*else if (database.DoesTableExist(tableName + "_New") == false)
             {
@@ -147,119 +149,119 @@ namespace Inlämningsuppgift_1_Genealogi
         private static void AddTableData(string tableName)
         {
             // Inserts data about persons to the table.
-            var dataTableNameParam = ("@dataTableName", tableName);
-            var sqlAddTableData = @"insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Majlinda', 'Balija', 'Mitrovicë', 'Kosovo', '1986', 'Dinore Balija', 'Xhafer Balija', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Fisnik', 'Balija', 'Mitrovicë', 'Kosovo', '1988', 'Dinore Balija', 'Xhafer Balija', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Granit', 'Balija', 'Över Kalix', 'Sweden', '1993', 'Dinore Balija', 'Xhafer Balija', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Dinore', 'Balija', 'Bajgorë', 'Kosovo', '1959', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Xhafer', 'Balija', 'Mitrovicë', 'Kosovo', '1959', 'Hat Baliu', 'Sadik Baliu', 'Alive');
+            //var dataTableNameParam = ("@dataTableName", tableName.ToString());
+            var sqlAddTableData = @$"INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Majlinda', 'Balija', 'Mitrovicë', 'Kosovo', '1986', 'Dinore Balija', 'Xhafer Balija', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Fisnik', 'Balija', 'Mitrovicë', 'Kosovo', '1988', 'Dinore Balija', 'Xhafer Balija', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Granit', 'Balija', 'Över Kalix', 'Sweden', '1993', 'Dinore Balija', 'Xhafer Balija', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Dinore', 'Balija', 'Bajgorë', 'Kosovo', '1959', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Xhafer', 'Balija', 'Mitrovicë', 'Kosovo', '1959', 'Hat Baliu', 'Sadik Baliu', 'Alive');
                                    
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Fexhri', 'Duraku', 'Bajgorë', 'Kosovo', '1957', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Resmijë', 'Istrefi', 'Bajgorë', 'Kosovo', '1961', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Hatiqe', 'Hasani', 'Bajgorë', 'Kosovo', '1963', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Zoja', 'Xhemajli', 'Bajgorë', 'Kosovo', '1967', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Fatmirë', 'Kabashi', 'Mitrovicë', 'Kosovo', '1976', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Shashivar', 'Istrefi', 'Bajgorë', 'Kosovo', '1965', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Kadri', 'Istrefi', 'Bajgorë', 'Kosovo', '1969', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Bekim', 'Istrefi', 'Bajgorë', 'Kosovo', '1971', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Avni', 'Istrefi', 'Mitrovicë', 'Kosovo', '1973', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Fexhri', 'Duraku', 'Bajgorë', 'Kosovo', '1957', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Resmijë', 'Istrefi', 'Bajgorë', 'Kosovo', '1961', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Hatiqe', 'Hasani', 'Bajgorë', 'Kosovo', '1963', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Zoja', 'Xhemajli', 'Bajgorë', 'Kosovo', '1967', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Fatmirë', 'Kabashi', 'Mitrovicë', 'Kosovo', '1976', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Shashivar', 'Istrefi', 'Bajgorë', 'Kosovo', '1965', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Kadri', 'Istrefi', 'Bajgorë', 'Kosovo', '1969', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Bekim', 'Istrefi', 'Bajgorë', 'Kosovo', '1971', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Avni', 'Istrefi', 'Mitrovicë', 'Kosovo', '1973', 'Vahide Istrefi', 'Jetish Istrefi', 'Alive');
                                     
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Remzije', 'Zeqiri', 'Mitrovicë', 'Kosovo', '1965', 'Hat Baliu', 'Sadik Baliu', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Enver', 'Baliu', 'Mitrovicë', 'Kosovo', '1961', 'Hat Baliu', 'Sadik Baliu', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Murtez', 'Baliu', 'Mitrovicë', 'Kosovo', '1957', 'Hat Baliu', 'Sadik Baliu', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Sylejman', 'Berisha', 'Mitrovicë', 'Kosovo', '1955', 'Hat Baliu', 'Sadik Baliu', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Sinan', 'Baliu', 'Mitrovicë', 'Kosovo', '1953', 'Hat Baliu', 'Sadik Baliu', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Ismajl', 'Osmani', 'Shtuticë', 'Kosovo', '1951', 'Hat Baliu', 'Sadik Baliu', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Ramadan', 'Baliu', 'Shtuticë', 'Kosovo', '1949', 'Hat Baliu', 'Sadik Baliu', 'Alive');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Nasuf', 'Baliu', 'Shtuticë', 'Kosovo', '1947', 'Hat Baliu', 'Sadik Baliu', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Remzije', 'Zeqiri', 'Mitrovicë', 'Kosovo', '1965', 'Hat Baliu', 'Sadik Baliu', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Enver', 'Baliu', 'Mitrovicë', 'Kosovo', '1961', 'Hat Baliu', 'Sadik Baliu', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Murtez', 'Baliu', 'Mitrovicë', 'Kosovo', '1957', 'Hat Baliu', 'Sadik Baliu', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Sylejman', 'Berisha', 'Mitrovicë', 'Kosovo', '1955', 'Hat Baliu', 'Sadik Baliu', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Sinan', 'Baliu', 'Mitrovicë', 'Kosovo', '1953', 'Hat Baliu', 'Sadik Baliu', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Ismajl', 'Osmani', 'Shtuticë', 'Kosovo', '1951', 'Hat Baliu', 'Sadik Baliu', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Ramadan', 'Baliu', 'Shtuticë', 'Kosovo', '1949', 'Hat Baliu', 'Sadik Baliu', 'Alive');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Nasuf', 'Baliu', 'Shtuticë', 'Kosovo', '1947', 'Hat Baliu', 'Sadik Baliu', 'Deceased');
                                    
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Jetish', 'Istrefi', 'Bajgorë', 'Kosovo', '1931', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Zeka', 'Istrefi', 'Bajgorë', 'Kosovo', '1929', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Fadil', 'Istrefi', 'Bajgorë', 'Kosovo', '1933', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Mexhit', 'Istrefi', 'Bajgorë', 'Kosovo', '1935', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Isa', 'Istrefi', 'Bajgorë', 'Kosovo', '1937', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Mursel', 'Istrefi', 'Bajgorë', 'Kosovo', '1939', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Muhamet', 'Istrefi', 'Bajgorë', 'Kosovo', '1941', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Hanusha', 'Meholli', 'Bajgorë', 'Kosovo', '1929', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Jetish', 'Istrefi', 'Bajgorë', 'Kosovo', '1931', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Zeka', 'Istrefi', 'Bajgorë', 'Kosovo', '1929', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Fadil', 'Istrefi', 'Bajgorë', 'Kosovo', '1933', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Mexhit', 'Istrefi', 'Bajgorë', 'Kosovo', '1935', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Isa', 'Istrefi', 'Bajgorë', 'Kosovo', '1937', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Mursel', 'Istrefi', 'Bajgorë', 'Kosovo', '1939', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Muhamet', 'Istrefi', 'Bajgorë', 'Kosovo', '1941', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Hanusha', 'Meholli', 'Bajgorë', 'Kosovo', '1929', 'Dylbere Istrefi', 'Imer Istrefi', 'Deceased');
                                     
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Vahide', 'Istrefi', 'Rahov', 'Kosovo', '1937', 'Raba Peci', 'Shiqiri Peci', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Ismja', 'Vallqi', 'Rahov', 'Kosovo', '1927', 'Raba Peci', 'Shiqiri Peci', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Arife', 'Unknown', 'Rahov', 'Kosovo', '1929', 'Raba Peci', 'Shiqiri Peci', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Fazile', 'Unknown', 'Rahov', 'Kosovo', '1931', 'Raba Peci', 'Shiqiri Peci', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Velia', 'Peci', 'Rahov', 'Kosovo', '1933', 'Raba Peci', 'Shiqiri Peci', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Vehbia', 'Peci', 'Rahov', 'Kosovo', '1935', 'Raba Peci', 'Shiqiri Peci', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Vahide', 'Istrefi', 'Rahov', 'Kosovo', '1937', 'Raba Peci', 'Shiqiri Peci', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Ismja', 'Vallqi', 'Rahov', 'Kosovo', '1927', 'Raba Peci', 'Shiqiri Peci', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Arife', 'Unknown', 'Rahov', 'Kosovo', '1929', 'Raba Peci', 'Shiqiri Peci', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Fazile', 'Unknown', 'Rahov', 'Kosovo', '1931', 'Raba Peci', 'Shiqiri Peci', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Velia', 'Peci', 'Rahov', 'Kosovo', '1933', 'Raba Peci', 'Shiqiri Peci', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Vehbia', 'Peci', 'Rahov', 'Kosovo', '1935', 'Raba Peci', 'Shiqiri Peci', 'Deceased');
                                     
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Sadik', 'Baliu', 'Shtuticë', 'Kosovo', '1928', 'Hateme Baliu', 'Osman Baliu', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Bali', 'Baliu', 'Shtuticë', 'Kosovo', '1930', 'Hateme Baliu', 'Osman Baliu', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                     values ('Sefer', 'Baliu', 'Shtuticë', 'Kosovo', '1932', 'Hateme Baliu', 'Osman Baliu', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Zenel', 'Baliu', 'Shtuticë', 'Kosovo', '1934', 'Hateme Baliu', 'Osman Baliu', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Sadik', 'Baliu', 'Shtuticë', 'Kosovo', '1928', 'Hateme Baliu', 'Osman Baliu', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Bali', 'Baliu', 'Shtuticë', 'Kosovo', '1930', 'Hateme Baliu', 'Osman Baliu', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                     VALUES ('Sefer', 'Baliu', 'Shtuticë', 'Kosovo', '1932', 'Hateme Baliu', 'Osman Baliu', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Zenel', 'Baliu', 'Shtuticë', 'Kosovo', '1934', 'Hateme Baliu', 'Osman Baliu', 'Deceased');
                                     
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Hat', 'Baliu', 'Likofcë', 'Kosovo', '1932', 'Han Rexhepi', 'Hiti Rexhepi', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Haxhi', 'Rexhepi', 'Likofcë', 'Kosovo', '1942', 'Han Rexhepi', 'Hiti Rexhepi', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Hat', 'Baliu', 'Likofcë', 'Kosovo', '1932', 'Han Rexhepi', 'Hiti Rexhepi', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Haxhi', 'Rexhepi', 'Likofcë', 'Kosovo', '1942', 'Han Rexhepi', 'Hiti Rexhepi', 'Deceased');
                                   
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Imer', 'Istrefi', 'Bajgorë', 'Kosovo', '1905', 'Unknown', 'Unknown', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Dylbere', 'Istrefi', 'Bare', 'Kosovo', '1911', 'Unknown', 'Unknown', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Imer', 'Istrefi', 'Bajgorë', 'Kosovo', '1905', 'Unknown', 'Unknown', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Dylbere', 'Istrefi', 'Bare', 'Kosovo', '1911', 'Unknown', 'Unknown', 'Deceased');
                                   
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Shiqiri', 'Peci', 'Rahov', 'Kosovo', '1902', 'Unknown', 'Unknown', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Raba', 'Peci', 'Rahov', 'Kosovo', '1905', 'Unknown', 'Unknown', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Shiqiri', 'Peci', 'Rahov', 'Kosovo', '1902', 'Unknown', 'Unknown', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Raba', 'Peci', 'Rahov', 'Kosovo', '1905', 'Unknown', 'Unknown', 'Deceased');
                                   
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Osman', 'Baliu', 'Shtuticë', 'Kosovo', '1905', 'Unknown', 'Unknown', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Hateme', 'Baliu', 'Llaush', 'Kosovo', '1907', 'Unknown', 'Unknown', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Osman', 'Baliu', 'Shtuticë', 'Kosovo', '1905', 'Unknown', 'Unknown', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Hateme', 'Baliu', 'Llaush', 'Kosovo', '1907', 'Unknown', 'Unknown', 'Deceased');
                                   
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Hiti', 'Rexhepi', 'Likofcë', 'Kosovo', '1904', 'Unknown', 'Unknown', 'Deceased');
-                                    insert into @dataTableName (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      values ('Han', 'Rexhepi', 'Prekaz', 'Kosovo', '1907', 'Unknown', 'Unknown', 'Deceased');";
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Hiti', 'Rexhepi', 'Likofcë', 'Kosovo', '1904', 'Unknown', 'Unknown', 'Deceased');
+                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                      VALUES ('Han', 'Rexhepi', 'Prekaz', 'Kosovo', '1907', 'Unknown', 'Unknown', 'Deceased');";
 
-            database.ExecuteSQL(sqlAddTableData, dataTableNameParam);
+            database.ExecuteSQL(sqlAddTableData);
 
             // Adds Age-column to the table.
             database.AlterTableAdd(tableName, "Age varchar(30)");
@@ -271,7 +273,7 @@ namespace Inlämningsuppgift_1_Genealogi
         // DOES TABLE EXIST: Checks if table name exists.
         internal bool DoesTableExist(string tableName)
         {
-            var dataTableName = ("@dataTableName", tableName);
+            var dataTableName = ("@dataTableName", tableName.ToString());
             var sqlDoesTableExist = @"SELECT name 
                                       FROM sys.tables
                                       WHERE name = @dataTableName;";
@@ -288,12 +290,12 @@ namespace Inlämningsuppgift_1_Genealogi
         // ADD COLUMN: Adds a new column with data type to a desired table.
         private void AlterTableAdd(string tableName, string columnsWithDataType)
         {
-            var dataTableNameParam = ("@dataTableName", tableName);
-            var columnsWithDataTypeParam = ("@columnsWithDataType", columnsWithDataType);
-            var sqlColumnsWithDataType = @"ALTER TABLE @dataTableName
-                                           ADD @columnsWithDataType";
+            //var dataTableNameParam = ("@dataTableName", tableName.ToString());
+            //var columnsWithDataTypeParam = ("@columnsWithDataType", columnsWithDataType);
+            var sqlColumnsWithDataType = @$"ALTER TABLE {tableName}
+                                            ADD {columnsWithDataType}";
 
-            ExecuteSQL(sqlColumnsWithDataType, dataTableNameParam, columnsWithDataTypeParam);
+            ExecuteSQL(sqlColumnsWithDataType);
         }
 
         // ADD PERSON: Adds a new person to current table in use.

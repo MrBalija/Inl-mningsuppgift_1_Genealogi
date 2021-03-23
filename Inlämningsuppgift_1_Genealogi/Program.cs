@@ -17,13 +17,8 @@ namespace Inlämningsuppgift_1_Genealogi
 
         static void Main(string[] args)
         {
-            /*
-            var test = SQLDatabase.database.DoesTableExist("Bug");
-            Console.WriteLine(test);
-            Console.ReadKey();
-            */
             // DATABASE: creates a database if it doesn't exist.
-            SQLDatabase.CreateDatabase("Family_Database");
+            SQLDatabase.CreateDatabase(SQLDatabase.database.DatabaseName); //"Family_Tree");
 
             // TABLE: creates table with .
             SQLDatabase.CreateTable(SQLDatabase.database.DataTableName);
@@ -38,7 +33,7 @@ namespace Inlämningsuppgift_1_Genealogi
         private static void WelcomeIntro() // WELCOME: welcome the user.
         {
             Console.Title = "";
-            Console.WriteLine("\n\n\n- Welcome to My Family-Tree!");
+            Console.WriteLine("\n\n\n- Welcome to my Family-Tree!");
             Console.WriteLine("\n\nPress to continue...");
             Console.ReadKey();
             Console.Clear();
@@ -300,7 +295,7 @@ namespace Inlämningsuppgift_1_Genealogi
             PrintMenuChoiceHeader(menuChoice);
 
             DataTable dataTable = SQLDatabase.database.GetDataTable(@"SELECT *
-                                                                       FROM My_Family_Tree;"
+                                                                      FROM My_Family_Tree;"
                                                                    );
 
             Console.WriteLine("\n|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |\n");

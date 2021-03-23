@@ -450,9 +450,7 @@ namespace Inlämningsuppgift_1_Genealogi
 
 
             var personNameParam = ("@name", searchName.ToString());
-
             var personLastNameParam = ("@lastName", searchLastName.ToString());
-
             var sqlSearchByNameLastName = @$"SELECT * 
                                              FROM My_Family_Tree 
                                              WHERE Name = @name 
@@ -840,15 +838,15 @@ namespace Inlämningsuppgift_1_Genealogi
         // COLUMN AGE: updates the column age with the persons age, alternatively 'R.I.P' if person has passed away.
         public static void UpdateColumnAge(string tableName)
         {
-            var dataTableNameParam = ("@dataTableName", tableName.ToString());
-            var sqlUpdateColumnAge = @"UPDATE @dataTableName
+            //var dataTableNameParam = ("@dataTableName", tableName.ToString());
+            var sqlUpdateColumnAge = @$"UPDATE {tableName}
                                        SET Age = CASE 
                                        WHEN [Vital status] = 'Deceased'
                                        THEN 'R.I.P'
                                        ELSE CONVERT(varchar(30), 2021 - Born)
                                        END";
 
-            SQLDatabase.database.ExecuteSQL(sqlUpdateColumnAge, dataTableNameParam);
+            SQLDatabase.database.ExecuteSQL(sqlUpdateColumnAge);
         }
 
         // PRINT Person: prints full information of a person.
