@@ -660,7 +660,6 @@ namespace Inlämningsuppgift_1_Genealogi
             else
             {
                 var personNameParam = ("@name", searchName.ToString());
-
                 var personLastNameParam = ("@lastName", searchLastName.ToString());
 
                 var sqlSearchGrandparents = @$"SELECT ID, Mother, Father 
@@ -804,8 +803,7 @@ namespace Inlämningsuppgift_1_Genealogi
                     Console.Write("> ");
                     var choice = Convert.ToInt32(Console.ReadLine());
 
-                    var personId = (int)dataTable.Rows[choice - 1]["ID"];
-                    
+                    var personId = (int)dataTable.Rows[choice - 1]["ID"]; 
                     var personIdParam = ("@id", personId.ToString());
 
                     var sqlShowChild = @$"SELECT * 

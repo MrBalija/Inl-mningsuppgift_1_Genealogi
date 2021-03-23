@@ -90,7 +90,7 @@ namespace Inlämningsuppgift_1_Genealogi
                     switch (menuChoice)
                     {
                         case 1:
-                            CRUD.Create(CRUD.person);
+                            CreatePerson();                            
                             break;
                         case 2:
                             ReadPerson();
@@ -140,6 +140,11 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
+        private static void CreatePerson()
+        {
+            CRUD.Create(CRUD.person);
+        }
+        
         private static void ReadPerson()
         {
             quitReadPerson = false;
@@ -148,7 +153,7 @@ namespace Inlämningsuppgift_1_Genealogi
                 CRUD.Read(CRUD.person);
             }
         }
-
+       
         private static void UpdatePerson()
         {
             quitUpdatePerson = false;
@@ -172,9 +177,9 @@ namespace Inlämningsuppgift_1_Genealogi
             Console.Clear();
             PrintMenuChoiceHeader(menuChoice);
 
-            DataTable dataTable = SQLDatabase.database.GetDataTable(@$"SELECT *
-                                                                       FROM {SQLDatabase.database.DataTableName}
-                                                                       ORDER BY Birthplace;"
+            DataTable dataTable = SQLDatabase.database.GetDataTable(@"SELECT *
+                                                                      FROM My_Family_Tree
+                                                                      ORDER BY Birthplace;"
                                                                    );
 
             Console.WriteLine("\n|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |\n");
@@ -194,9 +199,9 @@ namespace Inlämningsuppgift_1_Genealogi
             Console.Clear();
             PrintMenuChoiceHeader(menuChoice);
 
-            DataTable dataTable = SQLDatabase.database.GetDataTable(@$"SELECT *
-                                                                       FROM {SQLDatabase.database.DataTableName}
-                                                                       ORDER BY Born;"
+            DataTable dataTable = SQLDatabase.database.GetDataTable(@"SELECT *
+                                                                      FROM My_Family_Tree
+                                                                      ORDER BY Born;"
                                                                    );
 
             Console.WriteLine("\n|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |\n");
@@ -229,10 +234,10 @@ namespace Inlämningsuppgift_1_Genealogi
                 userStartingLetter += "%";
                 var startingLetterParam = ("@startingLetter", userStartingLetter);
 
-                var sql = (@$"SELECT *
-                          FROM {SQLDatabase.database.DataTableName}
-                          WHERE Name LIKE @startingLetter;");
-
+                var sql = (@"SELECT *
+                             FROM My_Family_Tree
+                             WHERE Name LIKE @startingLetter;"
+                          );
 
                 DataTable dataTable = SQLDatabase.database.GetDataTable(sql, startingLetterParam);
 
@@ -257,7 +262,7 @@ namespace Inlämningsuppgift_1_Genealogi
                     }
                     else if (dataTable.Rows.Count < 1)
                     {
-                        Console.Write("\n\n\nUnfortunatley there is no such person(s)! :(");
+                        Console.Write("\n\n\nUnfortunatley there is no such person! :(");
                         Console.Write("\n\n(Press to return...");
                         Console.ReadKey();
                     }
@@ -294,8 +299,8 @@ namespace Inlämningsuppgift_1_Genealogi
             Console.Clear();
             PrintMenuChoiceHeader(menuChoice);
 
-            DataTable dataTable = SQLDatabase.database.GetDataTable(@$"SELECT *
-                                                                       FROM {SQLDatabase.database.DataTableName};"
+            DataTable dataTable = SQLDatabase.database.GetDataTable(@"SELECT *
+                                                                       FROM My_Family_Tree;"
                                                                    );
 
             Console.WriteLine("\n|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |\n");
@@ -309,7 +314,7 @@ namespace Inlämningsuppgift_1_Genealogi
             Console.WriteLine("\n\nPress any to go back...");
             Console.ReadKey();
         }
-
+        
         public static void PrintMenuChoiceHeader(int menuChoice)
         {
             switch (menuChoice)
