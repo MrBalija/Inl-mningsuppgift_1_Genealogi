@@ -176,17 +176,7 @@ namespace Inlämningsuppgift_1_Genealogi
                                                                       FROM My_Family_Tree
                                                                       ORDER BY Birthplace;"
                                                                    );
-
-            Console.WriteLine("\n|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |\n");
-            for (int i = 0; i < dataTable.Rows.Count; i++)
-            {
-                DataRow row = dataTable.Rows[i];
-                Console.WriteLine(@$"[{i + 1}] {row["ID"]} {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}   {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}"
-                                 );
-            }
-
-            Console.WriteLine("\n\nPress any to go back...");
-            Console.ReadKey();
+            PrintTableInformation(dataTable);
         }
 
         private static void ListAllAfterYearBorn()
@@ -198,17 +188,7 @@ namespace Inlämningsuppgift_1_Genealogi
                                                                       FROM My_Family_Tree
                                                                       ORDER BY Born;"
                                                                    );
-
-            Console.WriteLine("\n|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |\n");
-            for (int i = 0; i < dataTable.Rows.Count; i++)
-            {
-                DataRow row = dataTable.Rows[i];
-                Console.WriteLine(@$"[{i + 1}] {row["ID"]} {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}   {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}"
-                                 );
-            }
-
-            Console.WriteLine("\n\nPress any to go back...");
-            Console.ReadKey();
+            PrintTableInformation(dataTable);
         }
 
         private static void ListAllAfterLetter()
@@ -228,7 +208,6 @@ namespace Inlämningsuppgift_1_Genealogi
 
                 userStartingLetter += "%";
                 var startingLetterParam = ("@startingLetter", userStartingLetter);
-
                 var sql = (@"SELECT *
                              FROM My_Family_Tree
                              WHERE Name LIKE @startingLetter;"
@@ -244,16 +223,7 @@ namespace Inlämningsuppgift_1_Genealogi
                     }
                     else if (dataTable.Rows.Count > 0)
                     {
-                        Console.WriteLine("\n|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |\n");
-                        for (int i = 0; i < dataTable.Rows.Count; i++)
-                        {
-                            DataRow row = dataTable.Rows[i];
-                            Console.WriteLine(@$"[{i + 1}] {row["ID"]} {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}   {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}"
-                                             );
-                        }
-
-                        Console.WriteLine("\n\nPress any to go back...");
-                        Console.ReadKey();
+                        PrintTableInformation(dataTable);
                     }
                     else if (dataTable.Rows.Count < 1)
                     {
@@ -297,17 +267,7 @@ namespace Inlämningsuppgift_1_Genealogi
             DataTable dataTable = SQLDatabase.database.GetDataTable(@"SELECT *
                                                                       FROM My_Family_Tree;"
                                                                    );
-
-            Console.WriteLine("\n|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |\n");
-            for (int i = 0; i < dataTable.Rows.Count; i++)
-            {
-                DataRow row = dataTable.Rows[i];
-                Console.WriteLine(@$"[{i + 1}] {row["ID"]} {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}  {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}"
-                                 );
-            }
-
-            Console.WriteLine("\n\nPress any to go back...");
-            Console.ReadKey();
+            PrintTableInformation(dataTable);
         }
         
         public static void PrintMenuChoiceHeader(int menuChoice)
@@ -370,5 +330,23 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
+        private static void PrintTableInformation(DataTable dataTable)
+        {
+            Console.WriteLine("\n----------------------------------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine(String.Format("| {0,-4} | {1,-2} | {2,-10} | {3,-10} | {4,-10} | {5,-16} | {6,-4} | {7,-15} | {8,-14} | {9,-12} | {10,5} |",
+                "#", "ID", "Name", "Last name", "Birthplace", "Country of birth", "Born", "Mother", "Father", "Vital status", "Age"));
+            Console.WriteLine("----------------------------------------------------------------------------------------------------------------------------------------");
+
+            for (int i = 0; i < dataTable.Rows.Count; i++)
+            {
+                DataRow row = dataTable.Rows[i];
+                Console.WriteLine(String.Format("| {0,-4} | {1,-2} | {2,-10} | {3,-10} | {4,-10} | {5,-16} | {6,-4} | {7,-15} | {8,-14} | {9,-12} | {10,5} |",
+                    @$"[{i + 1}]", @$"{row["ID"]}", @$"{row["Name"]}", @$"{row["Last name"]}", @$"{row["Birthplace"]}", @$"{row["Country of birth"]}", @$"{row["Born"]}",
+                    @$"{row["Mother"]}", @$"{row["Father"]}", @$"{row["Vital status"]}", @$"{row["Age"]}"));
+            }
+            Console.WriteLine("----------------------------------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine("\n\nPress any to go back...");
+            Console.ReadKey();
+        }
     }
 }
