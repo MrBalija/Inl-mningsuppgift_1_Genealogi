@@ -85,7 +85,7 @@ namespace Inlämningsuppgift_1_Genealogi
                     switch (menuChoice)
                     {
                         case 1:
-                            CreatePerson();                            
+                            CreatePerson();
                             break;
                         case 2:
                             ReadPerson();
@@ -139,7 +139,7 @@ namespace Inlämningsuppgift_1_Genealogi
         {
             CRUD.Create(CRUD.person);
         }
-        
+
         private static void ReadPerson()
         {
             quitReadPerson = false;
@@ -148,7 +148,7 @@ namespace Inlämningsuppgift_1_Genealogi
                 CRUD.Read(CRUD.person);
             }
         }
-       
+
         private static void UpdatePerson()
         {
             quitUpdatePerson = false;
@@ -269,7 +269,7 @@ namespace Inlämningsuppgift_1_Genealogi
                                                                    );
             PrintTableInformation(dataTable);
         }
-        
+
         public static void PrintMenuChoiceHeader(int menuChoice)
         {
             switch (menuChoice)
@@ -330,7 +330,7 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
-        private static void PrintTableInformation(DataTable dataTable)
+        public static void PrintTableInformation(DataTable dataTable)
         {
             Console.WriteLine("\n----------------------------------------------------------------------------------------------------------------------------------------");
             Console.WriteLine(String.Format("| {0,-4} | {1,-2} | {2,-10} | {3,-10} | {4,-10} | {5,-16} | {6,-4} | {7,-15} | {8,-14} | {9,-12} | {10,5} |",
@@ -345,8 +345,12 @@ namespace Inlämningsuppgift_1_Genealogi
                     @$"{row["Mother"]}", @$"{row["Father"]}", @$"{row["Vital status"]}", @$"{row["Age"]}"));
             }
             Console.WriteLine("----------------------------------------------------------------------------------------------------------------------------------------");
-            Console.WriteLine("\n\nPress any to go back...");
-            Console.ReadKey();
+
+            if (menuChoice > 4)
+            {
+                Console.WriteLine("\n\nPress any to go back...");
+                Console.ReadKey();
+            }
         }
     }
 }

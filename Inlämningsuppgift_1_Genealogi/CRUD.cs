@@ -195,7 +195,7 @@ namespace Inlämningsuppgift_1_Genealogi
                                       " Father: " + person.Father + "\n" +
                                       " Vital status: " + person.VitalStatus);
 
-                    Console.WriteLine("\n\n\n(Press to return...)\n");
+                    Console.WriteLine("\n\n\n(Press to go back...)\n");
                     Console.ReadKey();
 
                     SQLDatabase.InsertPersonToTable(person.Name, person.LastName, person.Birthplace, person.CountryOfBirth,
@@ -462,7 +462,7 @@ namespace Inlämningsuppgift_1_Genealogi
             {
                 Console.Clear();
                 Program.PrintMenuChoiceHeader(Program.menuChoice);
-                Console.WriteLine("\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n\n");
+                Console.WriteLine("\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n");
 
                 person.Id = (int)dataTable.Rows[0]["ID"];
                 person.Name = (string)dataTable.Rows[0]["Name"];
@@ -489,14 +489,9 @@ namespace Inlämningsuppgift_1_Genealogi
             {
                 Console.Clear();
                 Program.PrintMenuChoiceHeader(Program.menuChoice);
-                Console.WriteLine("\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n\n");
+                Console.WriteLine("\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n");
 
-                Console.WriteLine("|#| ID | Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
-                for (int i = 0; i < dataTable.Rows.Count; i++)
-                {
-                    DataRow row = dataTable.Rows[i];
-                    Console.WriteLine(@$"[{i + 1}] {row["ID"]}  {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}  {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}");
-                }
+                Program.PrintTableInformation(dataTable);
 
                 Console.WriteLine("\n\n- Pick a person.\n");
                 Console.Write("> ");
@@ -528,7 +523,7 @@ namespace Inlämningsuppgift_1_Genealogi
                 Console.Clear();
                 Console.Write("\n\n\nUnfortunatley there is no such person! :(");
 
-                Console.Write("\n\n(Press to return...)");
+                Console.Write("\n\n(Press to go back...)");
                 Console.ReadKey();
             }
             return person;
@@ -544,7 +539,6 @@ namespace Inlämningsuppgift_1_Genealogi
             string searchID = Console.ReadLine();
 
             var personIdParam = ("@id", searchID.ToString());
-
             var sqlSearchById = @$"SELECT * 
                                    FROM My_Family_Tree 
                                    WHERE Id = @id;";
@@ -555,7 +549,7 @@ namespace Inlämningsuppgift_1_Genealogi
             {
                 Console.Clear();
                 Program.PrintMenuChoiceHeader(Program.menuChoice);
-                Console.WriteLine("\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n\n");
+                Console.WriteLine("\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n");
 
                 person.Id = (int)dataTable.Rows[0]["ID"];
                 person.Name = (string)dataTable.Rows[0]["Name"];
@@ -592,20 +586,16 @@ namespace Inlämningsuppgift_1_Genealogi
         // SEARCH All: presents the user with a list of all people in the table.
         public static Person SearchAll()
         {
+            Console.Clear();
+            Program.PrintMenuChoiceHeader(Program.menuChoice);
+
             DataTable dataTable = SQLDatabase.database.GetDataTable(@$"SELECT * 
                                                                        FROM My_Family_Tree"
                                                                    );
 
-            Console.Clear();
-            Program.PrintMenuChoiceHeader(Program.menuChoice);
-            Console.WriteLine("\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n\n");
+            Console.WriteLine("\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n");
 
-            Console.WriteLine("|#|ID| Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
-            for (int i = 0; i < dataTable.Rows.Count; i++)
-            {
-                DataRow row = dataTable.Rows[i];
-                Console.WriteLine(@$"[{i + 1}] {row["ID"]} {row["Name"]}  {row["Last name"]}  {row["Birthplace"]}  {row["Country of birth"]}   {row["Born"]}  {row["Mother"]}  {row["Father"]}  {row["Vital status"]}  {row["Age"]}");
-            }
+            Program.PrintTableInformation(dataTable);
 
             Console.WriteLine("\n\n- Pick a person\n");
             Console.Write("> ");
@@ -672,10 +662,10 @@ namespace Inlämningsuppgift_1_Genealogi
                     Console.Clear();
                     Console.Write("\n\n\nUnfortunatley there is no such person! :(");
 
-                    Console.Write("\n\n(Press to return...)");
+                    Console.Write("\n\n(Press to go back...)");
                     Console.ReadKey();
                 }
-                else 
+                else
                 {
                     var personId = (int)dtMotherAndFather.Rows[0]["ID"];
                     if (personId > 22) // CHECKS FOR GRANDPARENTS: if the person entered has an ID higher than 22, then no grandparents exist for that person.
@@ -683,7 +673,7 @@ namespace Inlämningsuppgift_1_Genealogi
                         Console.Clear();
                         Console.WriteLine("\n\n\nUnfortunatley the person entered does not have grandparents listed! :(");
 
-                        Console.Write("\n\n(Press to return...)");
+                        Console.Write("\n\n(Press to go back...)");
                         Console.ReadKey();
                     }
                     else
@@ -734,9 +724,9 @@ namespace Inlämningsuppgift_1_Genealogi
                         Console.WriteLine("Grandmother: " + fullNameGrandmotherFatherSide);
                         Console.WriteLine("Grandfather: " + fullNameGrandfatherFatherSide);
 
-                        Console.Write("\n\n(Press to return...)");
+                        Console.Write("\n\n(Press to go back...)");
                         Console.ReadKey();
-                    } 
+                    }
                 }
             }
             return person;
@@ -761,7 +751,6 @@ namespace Inlämningsuppgift_1_Genealogi
             else
             {
                 var searchParentParam = ("@parent", searchParent.ToString());
-
                 var sqlSearchChildren = @$"SELECT ID, Name, [Last name], Mother, Father 
                                            FROM My_Family_Tree 
                                            WHERE Mother = @parent 
@@ -773,7 +762,7 @@ namespace Inlämningsuppgift_1_Genealogi
                 {
                     Console.Clear();
                     Program.PrintMenuChoiceHeader(Program.menuChoice);
-                    Console.WriteLine("\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n\n");
+                    Console.WriteLine("\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n");
 
                     person.Id = (int)dataTable.Rows[0]["ID"];
                     person.Name = (string)dataTable.Rows[0]["Name"];
@@ -781,29 +770,23 @@ namespace Inlämningsuppgift_1_Genealogi
                     person.Mother = (string)dataTable.Rows[0]["Mother"];
                     person.Father = (string)dataTable.Rows[0]["Father"];
 
-                    PrintChildren(person);
+                    PrintChild(person);
                 }
                 else if (dataTable.Rows.Count > 1)
                 {
                     Console.Clear();
                     Program.PrintMenuChoiceHeader(Program.menuChoice);
-                    Console.WriteLine("\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n\n");
 
-                    Console.WriteLine("|#|ID| Name | Last name | Mother | Father |");
-                    for (int i = 0; i < dataTable.Rows.Count; i++)
-                    {
-                        DataRow row = dataTable.Rows[i];
-                        Console.WriteLine(@$"[{i + 1}] {row["ID"]}  {row["Name"]}  {row["Last name"]}  {row["Mother"]}  {row["Father"]}"
-                                         );
-                    }
+                    Console.WriteLine("\n\nSearch completed! Persons found: " + dataTable.Rows.Count + "\n");
 
-                    Console.WriteLine("\n\n- Pick a child for further details.\n");
+                    PrintChildren(dataTable);
+
+                    Console.WriteLine("\n\n- Pick a person for more details.\n");
                     Console.Write("> ");
                     var choice = Convert.ToInt32(Console.ReadLine());
 
-                    var personId = (int)dataTable.Rows[choice - 1]["ID"]; 
+                    var personId = (int)dataTable.Rows[choice - 1]["ID"];
                     var personIdParam = ("@id", personId.ToString());
-
                     var sqlShowChild = @$"SELECT * 
                                           FROM My_Family_Tree
                                           WHERE ID = @id;";
@@ -821,14 +804,14 @@ namespace Inlämningsuppgift_1_Genealogi
                     person.VitalStatus = (string)dataTableShowChild.Rows[0]["Vital status"];
                     person.Age = (string)dataTableShowChild.Rows[0]["Age"];
 
-                    PrintChildren(person);
+                    PrintChild(person);
                 }
                 else
                 {
                     Console.Clear();
                     Console.Write("\n\n\nUnfortunatley the person does not excist or has no children listed in the table! :(");
 
-                    Console.Write("\n\n(Press to return...)");
+                    Console.Write("\n\n(Press to go back...)");
                     Console.ReadKey();
                 }
             }
@@ -854,8 +837,16 @@ namespace Inlämningsuppgift_1_Genealogi
         {
             Console.Clear();
             Program.PrintMenuChoiceHeader(Program.menuChoice);
-            Console.WriteLine("\n\n| ID | Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
-            Console.WriteLine($"{person.Id} {person.Name} {person.LastName} {person.Birthplace} {person.CountryOfBirth} {person.Born} {person.Mother} {person.Father} {person.VitalStatus} {person.Age}");
+
+            Console.WriteLine("\n---------------------------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine(String.Format("| {0,-2} | {1,-10} | {2,-10} | {3,-10} | {4,-16} | {5,-4} | {6,-15} | {7,-14} | {8,-12} | {9,5} |",
+                "ID", "Name", "Last name", "Birthplace", "Country of birth", "Born", "Mother", "Father", "Vital status", "Age"));
+            Console.WriteLine("---------------------------------------------------------------------------------------------------------------------------------");
+
+            Console.WriteLine(String.Format("| {0,-2} | {1,-10} | {2,-10} | {3,-10} | {4,-16} | {5,-4} | {6,-15} | {7,-14} | {8,-12} | {9,5} |",
+                @$"{person.Id}", @$"{person.Name}", @$"{person.LastName}", @$"{person.Birthplace}", @$"{person.CountryOfBirth}", @$"{person.Born}",
+                @$"{person.Mother}", @$"{person.Father}", @$"{person.VitalStatus}", @$"{person.Age}"));
+            Console.WriteLine("---------------------------------------------------------------------------------------------------------------------------------");
 
             if (Program.menuChoice < 3)
             {
@@ -864,16 +855,40 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
-        // PRINT Children: prints full information of a child.
-        public static void PrintChildren(Person person)
+        // PRINT Child: prints full information of a parents child.
+        public static void PrintChild(Person person)
         {
             Console.Clear();
             Program.PrintMenuChoiceHeader(Program.menuChoice);
-            Console.WriteLine("\n\n| ID | Name | Last name | Birthplace | Country of birth | Born | Mother | Father | Vital status | Age |");
-            Console.WriteLine($"{person.Id} {person.Name} {person.LastName} {person.Birthplace} {person.CountryOfBirth} {person.Born} {person.Mother} {person.Father} {person.VitalStatus} {person.Age}");
 
+            Console.WriteLine("\n---------------------------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine(String.Format("| {0,-2} | {1,-10} | {2,-10} | {3,-10} | {4,-16} | {5,-4} | {6,-15} | {7,-14} | {8,-12} | {9,5} |",
+                "ID", "Name", "Last name", "Birthplace", "Country of birth", "Born", "Mother", "Father", "Vital status", "Age"));
+            Console.WriteLine("---------------------------------------------------------------------------------------------------------------------------------");
+
+            Console.WriteLine(String.Format("| {0,-2} | {1,-10} | {2,-10} | {3,-10} | {4,-16} | {5,-4} | {6,-15} | {7,-14} | {8,-12} | {9,5} |",
+                @$"{person.Id}", @$"{person.Name}", @$"{person.LastName}", @$"{person.Birthplace}", @$"{person.CountryOfBirth}", @$"{person.Born}",
+                @$"{person.Mother}", @$"{person.Father}", @$"{person.VitalStatus}", @$"{person.Age}"));
+            Console.WriteLine("---------------------------------------------------------------------------------------------------------------------------------");
             Console.WriteLine("\n\nPress to return...");
             Console.ReadKey();
+        }
+
+        // PRINT Children: prints short information about children of a parent.
+        private static void PrintChildren(DataTable dataTable)
+        {
+            Console.WriteLine("\n--------------------------------------------------------------------------");
+            Console.WriteLine(String.Format("| {0,-4} | {1,-2} | {2,-10} | {3,-10} | {4,-15} | {5,-14} |", "#", "ID", "Name", "Last name", "Mother", "Father"));
+            Console.WriteLine("--------------------------------------------------------------------------");
+
+            for (int i = 0; i < dataTable.Rows.Count; i++)
+            {
+                DataRow row = dataTable.Rows[i];
+
+                Console.WriteLine(String.Format("| {0,-4} | {1,-2} | {2,-10} | {3,-10} | {4,-15} | {5,-14} |",
+                    @$"[{i + 1}]", @$"{row["ID"]}", @$"{row["Name"]}", @$"{row["Last name"]}", @$"{row["Mother"]}", @$"{row["Father"]}"));
+            }
+            Console.WriteLine("--------------------------------------------------------------------------");
         }
 
         //CLEAR: clears last line.
