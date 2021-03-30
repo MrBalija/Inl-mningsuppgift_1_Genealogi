@@ -16,7 +16,11 @@ namespace Inlämningsuppgift_1_Genealogi
         public static Person person = new Person();
         public static string searchLastName;
 
-        // CREATE: Creates an objekt Person
+      
+        /// <summary>
+        /// Creates a new person and adds it to the table.
+        /// </summary>
+        /// <param name="person"></param>
         public static void Create(Person person)
         {
             quitCreate = false;
@@ -207,6 +211,12 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
         // CLEAR FORM: resets the form so that it is empty when new information for the next person is filled.
+        /// <summary>
+        /// Resets the form by clearing the check boxes.
+        /// </summary>
+        /// <param name="person"></param>
+        /// <param name="checkBox"></param>
+        /// <param name="checkedBox"></param>
         private static void ClearCreate(Person person, out string[] checkBox, out string[] checkedBox)
         {
             checkBox = new string[8];
@@ -240,13 +250,18 @@ namespace Inlämningsuppgift_1_Genealogi
             person.VitalStatus = "";
         }
 
-        // READ: looks for a person in the table and prints out the information.
+        /// <summary>
+        /// Looks for a person in the table and prints out the information.
+        /// </summary>
+        /// <param name="person"></param>
         public static void Read(Person person)
         {
             Search();
         }
 
-        // UPDATE: looks for a person in the table and presents the user with the option to update any information.
+        /// <summary>
+        /// Looks for a person in the table and presents the user with the option to update any information. 
+        /// </summary>
         public static void Update()
         {
             quitUpdate = false;
@@ -336,7 +351,10 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
-        // DELETE: looks for a person in the table and presents the user with the option to delete a person from the table.
+        // DELETE: 
+        /// <summary>
+        /// Looks for a person in the table and presents the user with the option to delete the person from the table.
+        /// </summary>
         public static void Delete()
         {
             quitDelete = false;
@@ -388,7 +406,10 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
-        // SEARCH: presents the user with the option to search for a person either by name & last, id or list all people in the table.
+        /// <summary>
+        /// Presents the user with the option to search for a person either by name and last name, id or list all people in the table.
+        /// </summary>
+        /// <returns></returns>
         public static Person Search()
         {
             quitSearch = false;
@@ -436,7 +457,10 @@ namespace Inlämningsuppgift_1_Genealogi
             return person;
         }
 
-        // SEARCH by Name and Last name: user can search for a person by name and last name.
+        /// <summary>
+        /// User can search for a person by name and last name.
+        /// </summary>
+        /// <returns></returns>
         private static Person SearchByNameLastName()
         {
             Console.Clear();
@@ -650,7 +674,7 @@ namespace Inlämningsuppgift_1_Genealogi
                 var personNameParam = ("@name", searchName.ToString());
                 var personLastNameParam = ("@lastName", searchLastName.ToString());
 
-                var sqlSearchGrandparents = @$"SELECT ID, Mother, Father 
+                var sqlSearchGrandparents = @$"SELECT Mother, Father 
                                                FROM My_Family_Tree 
                                                WHERE Name = @name 
                                                AND [Last name] = @lastName;";
@@ -667,51 +691,88 @@ namespace Inlämningsuppgift_1_Genealogi
                 }
                 else
                 {
-                    var personId = (int)dtMotherAndFather.Rows[0]["ID"];
-                    if (personId > 22) // CHECKS FOR GRANDPARENTS: if the person entered has an ID higher than 22, then no grandparents exist for that person.
+                    // Full name of the Mother and Father of the person from data table are stored in a variable - later to be use to fetch grandparents.
+                    var storeFullNameMother = (string)dtMotherAndFather.Rows[0]["Mother"];
+                    var storeFullNameFather = (string)dtMotherAndFather.Rows[0]["Father"];
+
+                    /* Since the Mother & Father column holds full name (name and last name), we need to split it into two strings: name and last name.
+                       This so that we can make a new search using the name and last name separately.  */
+                    string[] motherArray = storeFullNameMother.Split(" ");
+                    string[] fatherArray = storeFullNameFather.Split(" ");
+                    var motherNameParam = ("@motherName", motherArray[0].ToString());  // Stores the name of the persons mother as a param.
+                    var motherLastNameParam = ("@motherLastName", motherArray[1].ToString());  // Stores the last name of the persons mother as a param.
+                    var fatherNameParam = ("@fatherName", fatherArray[0].ToString());  // Stores the name of the persons father as a param.
+                    var fatherLastNameParam = ("@fatherLastName", fatherArray[1].ToString());  // Stores the last name of the persons father as a param.
+
+                    // MOTHER-side: fetch grandmother and grandfather:
+                    var sqlSearchGrandparentsMotherSide = @$"SELECT Mother, Father 
+                                                             FROM My_Family_Tree 
+                                                             WHERE Name = @motherName 
+                                                             AND [Last name] = @motherLastName;";
+
+                    DataTable dtGrandparentsMotherSide = SQLDatabase.database.GetDataTable(sqlSearchGrandparentsMotherSide, motherNameParam, motherLastNameParam);
+
+
+                    // FATHER-side: fetch grandmother and grandfather:
+                    var sqlSearchGrandparentsFatherSide = @$"SELECT Mother, Father 
+                                                             FROM My_Family_Tree 
+                                                             WHERE Name = @fatherName 
+                                                             AND [Last name] = @fatherLastName;";
+
+                    DataTable dtGrandparentsFathersSide = SQLDatabase.database.GetDataTable(sqlSearchGrandparentsFatherSide, fatherNameParam, fatherLastNameParam);
+
+
+                    if (dtGrandparentsMotherSide.Rows.Count == 0 && dtGrandparentsFathersSide.Rows.Count == 0) // If NO grandparents are found from either side, print message.
                     {
                         Console.Clear();
-                        Console.WriteLine("\n\n\nUnfortunatley the person entered does not have grandparents listed! :(");
+                        Console.Write("\n\n\nUnfortunatley the person does not have any grandparents listed in the table! :(");
 
                         Console.Write("\n\n(Press to go back...)");
                         Console.ReadKey();
                     }
-                    else
+                    else if (dtGrandparentsMotherSide.Rows.Count == 0) // MOTHER-SIDE: if no granparents are found from mother side, print only grandparents full name from father-side.
                     {
-                        // Full name of the Mother and Father of the person from data table are stored in a variable - later to be use to fetch grandparents.
-                        var storeFullNameMother = (string)dtMotherAndFather.Rows[0]["Mother"];
-                        var storeFullNameFather = (string)dtMotherAndFather.Rows[0]["Father"];
+                        var fullNameGrandmotherFatherSide = (string)dtGrandparentsFathersSide.Rows[0]["Mother"]; // Store full name grandmother FATHER-side to be displayed.
+                        var fullNameGrandfatherFatherSide = (string)dtGrandparentsFathersSide.Rows[0]["Father"]; // Store full name grandfather FATHER-side to be displayed.
 
-                        /* Since the Mother & Father column holds full name (name and last name), we need to split it into two strings: name and last name.
-                           This so that we can make a new search using the name and last name separately.  */
-                        string[] motherArray = storeFullNameMother.Split(" ");
-                        string[] fatherArray = storeFullNameFather.Split(" ");
-                        var motherNameParam = ("@motherName", motherArray[0].ToString());  // Stores the name of the persons mother as a param.
-                        var motherLastNameParam = ("@motherLastName", motherArray[1].ToString());  // Stores the last name of the persons mother as a param.
-                        var fatherNameParam = ("@fatherName", fatherArray[0].ToString());  // Stores the name of the persons father as a param.
-                        var fatherLastNameParam = ("@fatherLastName", fatherArray[1].ToString());  // Stores the last name of the persons father as a param.
+                        Console.Clear();
+                        Program.PrintMenuChoiceHeader(Program.menuChoice);
 
-                        // MOTHER-side: fetch grandmother and grandfather:
-                        var sqlSearchGrandparentsMotherSide = @$"SELECT ID, Mother, Father 
-                                                                 FROM My_Family_Tree 
-                                                                 WHERE Name = @motherName 
-                                                                 AND [Last name] = @motherLastName;";
+                        Console.WriteLine("\n\n(MOTHER-side) Grandparents:");
+                        Console.WriteLine("No grandparents were found from mother-side.");
 
-                        DataTable dtGrandparentsMotherSide = SQLDatabase.database.GetDataTable(sqlSearchGrandparentsMotherSide, motherNameParam, motherLastNameParam);
-                        var fullNameGrandmotherMotherSide = (string)dtGrandparentsMotherSide.Rows[0]["Mother"];
-                        var fullNameGrandfatherMotherSide = (string)dtGrandparentsMotherSide.Rows[0]["Father"];
+                        Console.WriteLine("\n\n(FATHER-side) Grandparents:");
+                        Console.WriteLine("Grandmother: " + fullNameGrandmotherFatherSide);
+                        Console.WriteLine("Grandfather: " + fullNameGrandfatherFatherSide);
 
+                        Console.Write("\n\n(Press to go back...)");
+                        Console.ReadKey();
+                    }
+                    else if (dtGrandparentsFathersSide.Rows.Count == 0) // FATHER-SIDE: if no granparents are found from father side, print only grandparents full name from mother-side.
+                    {
+                        var fullNameGrandmotherMotherSide = (string)dtGrandparentsMotherSide.Rows[0]["Mother"]; // Store full name grandmother MOTHER-side to be displayed.
+                        var fullNameGrandfatherMotherSide = (string)dtGrandparentsMotherSide.Rows[0]["Father"]; // Store full name grandfather MOTHER-side to be displayed.
 
-                        // FATHER-side: fetch grandmother and grandfather:
-                        var sqlSearchGrandparentsFatherSide = @$"SELECT ID, Mother, Father 
-                                                                 FROM My_Family_Tree 
-                                                                 WHERE Name = @fatherName 
-                                                                 AND [Last name] = @fatherLastName;";
+                        Console.Clear();
+                        Program.PrintMenuChoiceHeader(Program.menuChoice);
 
-                        DataTable dtGrandparentsFathersSide = SQLDatabase.database.GetDataTable(sqlSearchGrandparentsFatherSide, fatherNameParam, fatherLastNameParam);
-                        var fullNameGrandmotherFatherSide = (string)dtGrandparentsFathersSide.Rows[0]["Mother"];
-                        var fullNameGrandfatherFatherSide = (string)dtGrandparentsFathersSide.Rows[0]["Father"];
+                        Console.WriteLine("\n\n(MOTHER-side) Grandparents:");
+                        Console.WriteLine("Grandmother: " + fullNameGrandmotherMotherSide);
+                        Console.WriteLine("Grandfather: " + fullNameGrandfatherMotherSide);
 
+                        Console.WriteLine("\n\n(FATHER-side) Grandparents:");
+                        Console.WriteLine("No grandparents were found from father-side.");
+
+                        Console.Write("\n\n(Press to go back...)");
+                        Console.ReadKey();
+                    }
+                    else  // If grandparents are found from mother and father side, print full name for both.
+                    {
+                        var fullNameGrandmotherMotherSide = (string)dtGrandparentsMotherSide.Rows[0]["Mother"]; // Store full name grandmother MOTHER-side to be displayed.
+                        var fullNameGrandfatherMotherSide = (string)dtGrandparentsMotherSide.Rows[0]["Father"]; // Store full name grandfather MOTHER-side to be displayed.
+
+                        var fullNameGrandmotherFatherSide = (string)dtGrandparentsFathersSide.Rows[0]["Mother"]; // Store full name grandmother FATHER-side to be displayed.
+                        var fullNameGrandfatherFatherSide = (string)dtGrandparentsFathersSide.Rows[0]["Father"]; // Store full name grandfather FATHER-side to be displayed.
 
                         Console.Clear();
                         Program.PrintMenuChoiceHeader(Program.menuChoice);

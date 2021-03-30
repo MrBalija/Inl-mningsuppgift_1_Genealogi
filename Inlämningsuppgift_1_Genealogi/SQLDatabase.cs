@@ -149,7 +149,6 @@ namespace Inlämningsuppgift_1_Genealogi
         private static void AddTableData(string tableName)
         {
             // Inserts data about persons to the table.
-            //var dataTableNameParam = ("@dataTableName", tableName.ToString());
             var sqlAddTableData = @$"INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
                                       VALUES ('Majlinda', 'Balija', 'Mitrovicë', 'Kosovo', '1986', 'Dinore Balija', 'Xhafer Balija', 'Alive');
                                     INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
@@ -239,27 +238,27 @@ namespace Inlämningsuppgift_1_Genealogi
                                     INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
                                       VALUES ('Hat', 'Baliu', 'Likofcë', 'Kosovo', '1932', 'Han Rexhepi', 'Hiti Rexhepi', 'Deceased');
                                     INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      VALUES ('Haxhi', 'Rexhepi', 'Likofcë', 'Kosovo', '1942', 'Han Rexhepi', 'Hiti Rexhepi', 'Deceased');
+                                      VALUES ('Haxhi', 'Rexhepi', 'Likofcë', 'Kosovo', '1942', 'Han Rexhepi', 'Hiti Rexhepi', 'Deceased');";
                                   
-                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      VALUES ('Imer', 'Istrefi', 'Bajgorë', 'Kosovo', '1905', 'Unknown', 'Unknown', 'Deceased');
-                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      VALUES ('Dylbere', 'Istrefi', 'Bare', 'Kosovo', '1911', 'Unknown', 'Unknown', 'Deceased');
+                                    //INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                    //  VALUES ('Imer', 'Istrefi', 'Bajgorë', 'Kosovo', '1905', 'Unknown', 'Unknown', 'Deceased');
+                                    //INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                    //  VALUES ('Dylbere', 'Istrefi', 'Bare', 'Kosovo', '1911', 'Unknown', 'Unknown', 'Deceased');
                                   
-                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      VALUES ('Shiqiri', 'Peci', 'Rahov', 'Kosovo', '1902', 'Unknown', 'Unknown', 'Deceased');
-                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      VALUES ('Raba', 'Peci', 'Rahov', 'Kosovo', '1905', 'Unknown', 'Unknown', 'Deceased');
+                                    //INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                    //  VALUES ('Shiqiri', 'Peci', 'Rahov', 'Kosovo', '1902', 'Unknown', 'Unknown', 'Deceased');
+                                    //INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                    //  VALUES ('Raba', 'Peci', 'Rahov', 'Kosovo', '1905', 'Unknown', 'Unknown', 'Deceased');
                                   
-                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      VALUES ('Osman', 'Baliu', 'Shtuticë', 'Kosovo', '1905', 'Unknown', 'Unknown', 'Deceased');
-                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      VALUES ('Hateme', 'Baliu', 'Llaush', 'Kosovo', '1907', 'Unknown', 'Unknown', 'Deceased');
+                                    //INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                    //  VALUES ('Osman', 'Baliu', 'Shtuticë', 'Kosovo', '1905', 'Unknown', 'Unknown', 'Deceased');
+                                    //INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                    //  VALUES ('Hateme', 'Baliu', 'Llaush', 'Kosovo', '1907', 'Unknown', 'Unknown', 'Deceased');
                                   
-                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      VALUES ('Hiti', 'Rexhepi', 'Likofcë', 'Kosovo', '1904', 'Unknown', 'Unknown', 'Deceased');
-                                    INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
-                                      VALUES ('Han', 'Rexhepi', 'Prekaz', 'Kosovo', '1907', 'Unknown', 'Unknown', 'Deceased');";
+                                    //INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                    //  VALUES ('Hiti', 'Rexhepi', 'Likofcë', 'Kosovo', '1904', 'Unknown', 'Unknown', 'Deceased');
+                                    //INSERT INTO {tableName} (Name, [Last name], Birthplace, [Country of birth], Born, Mother, Father, [Vital status]) 
+                                    //  VALUES ('Han', 'Rexhepi', 'Prekaz', 'Kosovo', '1907', 'Unknown', 'Unknown', 'Deceased');";
 
             database.ExecuteSQL(sqlAddTableData);
 
@@ -299,7 +298,7 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
         // ADD PERSON: Adds a new person to current table in use.
-        internal static void InsertPersonToTable(string name, string lastName, string birthplace, string countryOfBirth, int born, string mother, string father, string vitalStatus)
+        public static void InsertPersonToTable(string name, string lastName, string birthplace, string countryOfBirth, int born, string mother, string father, string vitalStatus)
         {
             var dataTableNameParam = ("@dataTableName", database.DataTableName.ToString());
             var nameParam = ("@name", name.ToString());

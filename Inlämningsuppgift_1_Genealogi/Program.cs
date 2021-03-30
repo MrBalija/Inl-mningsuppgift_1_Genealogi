@@ -18,7 +18,7 @@ namespace Inlämningsuppgift_1_Genealogi
         static void Main(string[] args)
         {
             // DATABASE: creates a database if it doesn't exist.
-            SQLDatabase.CreateDatabase(SQLDatabase.database.DatabaseName); //"Family_Tree");
+            SQLDatabase.CreateDatabase("Family_Tree"); //SQLDatabase.database.DatabaseName);
 
             // TABLE: creates table with .
             SQLDatabase.CreateTable(SQLDatabase.database.DataTableName);
@@ -30,7 +30,8 @@ namespace Inlämningsuppgift_1_Genealogi
             Menu();
         }
 
-        private static void WelcomeIntro() // WELCOME: welcome the user.
+        // WELCOME: welcome the user.
+        private static void WelcomeIntro()
         {
             Console.Title = "";
             Console.WriteLine("\n\n\n- Welcome to my Family-Tree!");
@@ -55,7 +56,8 @@ namespace Inlämningsuppgift_1_Genealogi
             Thread.Sleep(1500);
         }
 
-        private static void Menu() //MENU: presents the user with a menu of 7 options.
+        //MENU: presents the user with a menu of 7 options.
+        private static void Menu()
         {
             while (!quitProgram)
             {
