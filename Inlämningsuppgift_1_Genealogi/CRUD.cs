@@ -210,7 +210,6 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
-        // CLEAR FORM: resets the form so that it is empty when new information for the next person is filled.
         /// <summary>
         /// Resets the form by clearing the check boxes.
         /// </summary>
@@ -351,7 +350,6 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
-        // DELETE: 
         /// <summary>
         /// Looks for a person in the table and presents the user with the option to delete the person from the table.
         /// </summary>
@@ -553,7 +551,10 @@ namespace Inlämningsuppgift_1_Genealogi
             return person;
         }
 
-        // SEARCH by Id: user can search for a person by ID.
+        /// <summary>
+        /// User can search for a person by ID.
+        /// </summary>
+        /// <returns></returns>
         private static Person SearchById()
         {
             Console.Clear();
@@ -607,7 +608,10 @@ namespace Inlämningsuppgift_1_Genealogi
             return person;
         }
 
-        // SEARCH All: presents the user with a list of all people in the table.
+        /// <summary>
+        /// Presents the user with a list of all people in the table.
+        /// </summary>
+        /// <returns></returns>
         public static Person SearchAll()
         {
             Console.Clear();
@@ -647,7 +651,10 @@ namespace Inlämningsuppgift_1_Genealogi
             return person;
         }
 
-        // SEARCH Grandparents: user are presented with the grandparents of a person of their search choice in the table.
+        /// <summary>
+        /// User can search for grandparents of an individual by typing the person of interest in the search.
+        /// </summary>
+        /// <returns></returns>
         public static Person SearchGrandparents()
         {
             Console.Clear();
@@ -793,7 +800,10 @@ namespace Inlämningsuppgift_1_Genealogi
             return person;
         }
 
-        // SEARCH Children: user are presented with children of a parent of their search choice in the table.
+        /// <summary>
+        /// User can search for children of an individual by typing the person of interest in the search.
+        /// </summary>
+        /// <returns></returns>
         public static Person SearchChildren()
         {
             Console.Clear();
@@ -879,7 +889,10 @@ namespace Inlämningsuppgift_1_Genealogi
             return person;
         }
 
-        // COLUMN AGE: updates the column age with the persons age, alternatively 'R.I.P' if person has passed away.
+        /// <summary>
+        /// Updates the age column with the age of the person, respectively, 'R.I.P' if the person has passed away.
+        /// </summary>
+        /// <param name="tableName"></param>
         public static void UpdateColumnAge(string tableName)
         {
             //var dataTableNameParam = ("@dataTableName", tableName.ToString());
@@ -893,7 +906,10 @@ namespace Inlämningsuppgift_1_Genealogi
             SQLDatabase.database.ExecuteSQL(sqlUpdateColumnAge);
         }
 
-        // PRINT Person: prints full information of a person.
+        /// <summary>
+        /// Prints all information of a person.
+        /// </summary>
+        /// <param name="person"></param>
         public static void Print(Person person)
         {
             Console.Clear();
@@ -916,7 +932,10 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
-        // PRINT Child: prints full information of a parents child.
+        /// <summary>
+        /// Prints all information of a child.
+        /// </summary>
+        /// <param name="person"></param>
         public static void PrintChild(Person person)
         {
             Console.Clear();
@@ -936,6 +955,10 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
         // PRINT Children: prints short information about children of a parent.
+        /// <summary>
+        /// Prints specific information of children, including: '#' (= user choice), ID, Name, Last name, Mother and Father.
+        /// </summary>
+        /// <param name="dataTable"></param>
         private static void PrintChildren(DataTable dataTable)
         {
             Console.WriteLine("\n--------------------------------------------------------------------------");
@@ -953,6 +976,9 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
         //CLEAR: clears last line.
+        /// <summary>
+        /// Clears last line.
+        /// </summary>
         public static void ClearLastLine()
         {
             Console.SetCursorPosition(0, Console.CursorTop - 1);

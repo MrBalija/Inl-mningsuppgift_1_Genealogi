@@ -23,14 +23,14 @@ namespace Inlämningsuppgift_1_Genealogi
             // TABLE: creates table with .
             SQLDatabase.CreateTable(SQLDatabase.database.DataTableName);
 
-            // WELCOMES the user.
-            //WelcomeIntro();
+            WelcomeIntro();
 
-            //MENU: presents the menu to the user.
             Menu();
         }
 
-        // WELCOME: welcome the user.
+        /// <summary>
+        /// Welcome introduction for user.
+        /// </summary>
         private static void WelcomeIntro()
         {
             Console.Title = "";
@@ -56,7 +56,9 @@ namespace Inlämningsuppgift_1_Genealogi
             Thread.Sleep(1500);
         }
 
-        //MENU: presents the user with a menu of 7 options.
+        /// <summary>
+        /// Presents the user with the main menu.
+        /// </summary>
         private static void Menu()
         {
             while (!quitProgram)
@@ -137,11 +139,17 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
+        /// <summary>
+        /// Only purpose is to keep the switch clean and calls the Create-method (= creates and adds a new person to the table).
+        /// </summary>
         private static void CreatePerson()
         {
             CRUD.Create(CRUD.person);
         }
 
+        /// <summary>
+        /// Only purpose is to keep the switch clean and calls the Read-method (= looks for a person in the table and prints out the information).
+        /// </summary>
         private static void ReadPerson()
         {
             quitReadPerson = false;
@@ -151,6 +159,9 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
+        /// <summary>
+        /// Only purpose is to keep the switch clean and calls the Update-method (= looks for a person in the table and gives the option to update any information).
+        /// </summary>
         private static void UpdatePerson()
         {
             quitUpdatePerson = false;
@@ -160,6 +171,9 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
+        /// <summary>
+        /// Only purpose is to keep the switch clean and calls the Delete-method (= looks for a person in the table and gives the option to delete that person).
+        /// </summary>
         private static void DeletePerson()
         {
             quitDeletePerson = false;
@@ -169,6 +183,9 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
+        /// <summary>
+        /// Lists all people in the table after Birthplace.
+        /// </summary>
         private static void ListAllAfterBirthplace()
         {
             Console.Clear();
@@ -181,6 +198,9 @@ namespace Inlämningsuppgift_1_Genealogi
             PrintTableInformation(dataTable);
         }
 
+        /// <summary>
+        /// Lists all people in the table after year born.
+        /// </summary>
         private static void ListAllAfterYearBorn()
         {
             Console.Clear();
@@ -193,6 +213,9 @@ namespace Inlämningsuppgift_1_Genealogi
             PrintTableInformation(dataTable);
         }
 
+        /// <summary>
+        /// Lists all people in the table after a certain starting letter.
+        /// </summary>
         private static void ListAllAfterLetter()
         {
             var quitListAllAfterLetter = false;
@@ -243,6 +266,9 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
+        /// <summary>
+        /// Only purpose is to keep the switch clean and calls the SearchGrandparents-method (= looks for a person in the table and prints that persons grandparents).
+        /// </summary>
         private static void ShowGrandparents()
         {
             quitShowGrandparents = false;
@@ -252,6 +278,9 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
+        /// <summary>
+        /// Only purpose is to keep the switch clean and calls the SearchChildren-method (= looks for a person in the table and prints that persons children).
+        /// </summary>
         private static void ShowChildren()
         {
             quitShowChildren = false;
@@ -261,6 +290,9 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
+        /// <summary>
+        /// Prints all people in the table.
+        /// </summary>
         private static void ShowAllMembers()
         {
             Console.Clear();
@@ -272,6 +304,10 @@ namespace Inlämningsuppgift_1_Genealogi
             PrintTableInformation(dataTable);
         }
 
+        /// <summary>
+        /// Prints a menu header.
+        /// </summary>
+        /// <param name="menuChoice"></param>
         public static void PrintMenuChoiceHeader(int menuChoice)
         {
             switch (menuChoice)
@@ -332,6 +368,10 @@ namespace Inlämningsuppgift_1_Genealogi
             }
         }
 
+        /// <summary>
+        /// Prints align table information.
+        /// </summary>
+        /// <param name="dataTable"></param>
         public static void PrintTableInformation(DataTable dataTable)
         {
             Console.WriteLine("\n----------------------------------------------------------------------------------------------------------------------------------------");

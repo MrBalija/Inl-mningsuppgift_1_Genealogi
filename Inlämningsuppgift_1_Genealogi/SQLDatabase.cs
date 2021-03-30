@@ -12,13 +12,19 @@ namespace Inlämningsuppgift_1_Genealogi
         // GLOBAL VARIABLES:
         internal static SQLDatabase database = new SQLDatabase();
 
+
         // PROPERTIES:
         private string ConnectionString { get; set; } = @"Data Source=.\SQLExpress;Integrated Security=true;database={0}";
         public string DatabaseName { get; set; } = "Family_Tree";
         public string DataTableName { get; set; } = "My_Family_Tree";
 
 
-        // DATA TABLE: Fetches data tables from the database.
+        /// <summary>
+        /// Fethes data tables from database.
+        /// </summary>
+        /// <param name="sqlString"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         public DataTable GetDataTable(string sqlString, params (string, string)[] parameters)
         {
             var dataTable = new DataTable(); // Förbered Datatable
@@ -44,7 +50,12 @@ namespace Inlämningsuppgift_1_Genealogi
             return dataTable; // Returnera DataTable
         }
 
-        // SQL-EXECUTER: Executes SQL-commands sent to the database.
+        /// <summary>
+        /// Executes SQL-commands sent to the database (returns rows affected).
+        /// </summary>
+        /// <param name="sqlString"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         public long ExecuteSQL(string sqlString, params (string, string)[] parameters)
         {
             long rowsAffected = 0;
@@ -64,7 +75,10 @@ namespace Inlämningsuppgift_1_Genealogi
             return rowsAffected;
         }
 
-        // DATABASE: Creates a database.
+        /// <summary>
+        /// Creates a database.
+        /// </summary>
+        /// <param name="databaseName"></param>
         public static void CreateDatabase(string databaseName)
         {
             if (database.DoesDatabaseExist(databaseName) == false)
@@ -87,7 +101,11 @@ namespace Inlämningsuppgift_1_Genealogi
             }*/
         }
 
-        // DOES DATABASE EXIST: Checks if database name exists.
+        /// <summary>
+        /// Checks if database exists.
+        /// </summary>
+        /// <param name="databaseName"></param>
+        /// <returns></returns>
         private bool DoesDatabaseExist(string databaseName)
         {
             var databaseNameParam = ("@databaseName", databaseName.ToString());
@@ -103,7 +121,10 @@ namespace Inlämningsuppgift_1_Genealogi
             return dataBase.Rows.Count > 0;
         }
 
-        // TABLE: Creates a table.
+        /// <summary>
+        /// Creates a table.
+        /// </summary>
+        /// <param name="tableName"></param>
         public static void CreateTable(string tableName)
         {
             if (database.DoesTableExist(tableName) == false)
@@ -145,7 +166,10 @@ namespace Inlämningsuppgift_1_Genealogi
             }*/
         }
 
-        //TABLE DATA: Adds data to table with family and relatives, 3 generations back.
+        /// <summary>
+        /// Adds table data with family and relatives, 3 generations back.
+        /// </summary>
+        /// <param name="tableName"></param>
         private static void AddTableData(string tableName)
         {
             // Inserts data about persons to the table.
@@ -270,6 +294,11 @@ namespace Inlämningsuppgift_1_Genealogi
         }
 
         // DOES TABLE EXIST: Checks if table name exists.
+        /// <summary>
+        /// Checks if table exists.
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
         internal bool DoesTableExist(string tableName)
         {
             var dataTableName = ("@dataTableName", tableName.ToString());
@@ -286,18 +315,30 @@ namespace Inlämningsuppgift_1_Genealogi
             return table.Rows.Count > 0;
         }
 
-        // ADD COLUMN: Adds a new column with data type to a desired table.
+        /// <summary>
+        /// Adds a new column with data type to a table.
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="columnsWithDataType"></param>
         private void AlterTableAdd(string tableName, string columnsWithDataType)
         {
-            //var dataTableNameParam = ("@dataTableName", tableName.ToString());
-            //var columnsWithDataTypeParam = ("@columnsWithDataType", columnsWithDataType);
             var sqlColumnsWithDataType = @$"ALTER TABLE {tableName}
                                             ADD {columnsWithDataType}";
 
             ExecuteSQL(sqlColumnsWithDataType);
         }
 
-        // ADD PERSON: Adds a new person to current table in use.
+        /// <summary>
+        /// Adds a new person to a table.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="lastName"></param>
+        /// <param name="birthplace"></param>
+        /// <param name="countryOfBirth"></param>
+        /// <param name="born"></param>
+        /// <param name="mother"></param>
+        /// <param name="father"></param>
+        /// <param name="vitalStatus"></param>
         public static void InsertPersonToTable(string name, string lastName, string birthplace, string countryOfBirth, int born, string mother, string father, string vitalStatus)
         {
             var dataTableNameParam = ("@dataTableName", database.DataTableName.ToString());
