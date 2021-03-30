@@ -8,12 +8,11 @@ namespace Inlämningsuppgift_1_Genealogi
 {
     class SQLDatabase
     {
-
-        // GLOBAL VARIABLES:
         internal static SQLDatabase database = new SQLDatabase();
 
-
-        // PROPERTIES:
+        /// <summary>
+        /// Properties (class SQLDatabase).
+        /// </summary>
         private string ConnectionString { get; set; } = @"Data Source=.\SQLExpress;Integrated Security=true;database={0}";
         public string DatabaseName { get; set; } = "Family_Tree";
         public string DataTableName { get; set; } = "My_Family_Tree";
@@ -81,6 +80,8 @@ namespace Inlämningsuppgift_1_Genealogi
         /// <param name="databaseName"></param>
         public static void CreateDatabase(string databaseName)
         {
+            database.DatabaseName = "Master";
+
             if (database.DoesDatabaseExist(databaseName) == false)
             {
                 // Create a database based on the 'databaseName' input.
@@ -91,14 +92,6 @@ namespace Inlämningsuppgift_1_Genealogi
                 // Direct the user to the proper database = 'databaseName' input.
                 database.DatabaseName = databaseName;
             }
-            /*else
-            {
-                // If database exist, create a database based on the 'tableName' input and add '_New' at the end of the name.
-                database.ExecuteSQL($"CREATE DATABASE {databaseName}_New;");
-
-                // Direct the user to the proper database = 'databaseName' input.
-                database.DatabaseName = databaseName;
-            }*/
         }
 
         /// <summary>
@@ -147,23 +140,6 @@ namespace Inlämningsuppgift_1_Genealogi
                 database.ExecuteSQL(sqlCreateTable);
                 AddTableData(tableName.ToString());
             }
-            /*else if (database.DoesTableExist(tableName + "_New") == false)
-            {
-                // If table exist, create a table based on the 'tableName' input and add '_New' at the end of the name.
-                database.ExecuteSQL(@$"USE {database.DatabaseName}
-                                       CREATE TABLE {tableName}_New(
-                                       ID int NOT NULL Identity (1,1),
-                                       Name varchar(30),
-                                       [Last name] varchar(30),
-                                       Birthplace varchar(30),
-                                       [Country of birth] varchar(30),
-                                       Born int,
-                                       Mother varchar(30),
-                                       Father varchar(30),
-                                       [Vital status] varchar(30));"
-                                   );
-                AddTableData(tableName);
-            }*/
         }
 
         /// <summary>

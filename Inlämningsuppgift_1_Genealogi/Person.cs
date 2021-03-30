@@ -7,7 +7,9 @@ namespace Inlämningsuppgift_1_Genealogi
     class Person
     {
 
-        // PROPERTIES:
+        /// <summary>
+        /// Properties (class Person).
+        /// </summary>
         public int Id { get; set; }
         public string Name { get; set; }
         public string LastName { get; set; }

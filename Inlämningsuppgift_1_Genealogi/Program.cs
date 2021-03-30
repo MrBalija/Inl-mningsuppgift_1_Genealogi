@@ -17,10 +17,8 @@ namespace Inlämningsuppgift_1_Genealogi
 
         static void Main(string[] args)
         {
-            // DATABASE: creates a database if it doesn't exist.
-            SQLDatabase.CreateDatabase("Family_Tree"); //SQLDatabase.database.DatabaseName);
+            SQLDatabase.CreateDatabase("Family_Tree");
 
-            // TABLE: creates table with .
             SQLDatabase.CreateTable(SQLDatabase.database.DataTableName);
 
             WelcomeIntro();
